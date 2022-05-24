@@ -1,0 +1,1 @@
+export default ['/user_login','/super_login','/forget_user','/forget_super','/create_user']
