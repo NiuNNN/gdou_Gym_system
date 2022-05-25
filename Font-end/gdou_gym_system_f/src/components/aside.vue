@@ -23,7 +23,7 @@
         <!-- 场地部分 -->
         <el-menu-item>
           <i class="el-icon-school"></i>
-          <span slot="title" class="black">场地使用</span>
+          <span slot="title" class="black" index="">场地使用</span>
         </el-menu-item>
         <el-menu-item-group>
           <el-menu-item index="2-1">场地预约</el-menu-item>
@@ -34,7 +34,7 @@
         <!-- 赛事部分 -->
         <el-menu-item>
           <i class="el-icon-trophy"></i>
-          <span slot="title" class="black">赛事管理</span>
+          <span slot="title" class="black" index="">赛事管理</span>
         </el-menu-item>
         <el-menu-item-group>
           <el-menu-item index="3-1">赛事创建</el-menu-item>
@@ -46,14 +46,14 @@
         <!-- 器材管理 -->
         <el-menu-item>
           <i class="el-icon-basketball"></i>
-          <span slot="title" class="black">器材管理</span>
+          <span slot="title" class="black" index="">器材管理</span>
         </el-menu-item>
         <el-menu-item-group>
           <el-menu-item index="4-1">器材租用</el-menu-item>
           <el-menu-item index="4-2">器材返还</el-menu-item>
         </el-menu-item-group>
         <!-- 管理员部分 -->
-        <el-submenu disabled>
+        <el-submenu disabled index="">
           <template slot="title">
             <i class="el-icon-s-custom"></i>
             <span class="black">管理员</span>

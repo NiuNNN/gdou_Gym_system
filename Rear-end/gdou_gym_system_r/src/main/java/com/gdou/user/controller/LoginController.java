@@ -83,16 +83,9 @@ public class LoginController {
      * @return CommonResult
      */
     @PutMapping("/user")
-    public CommonResult updateUser(@RequestBody User user){
+    public CommonResult updateUserPwd(@RequestBody User user){
 //        System.out.println(user);
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper
-                .eq("name",user.getName())
-                .eq("phone",user.getPhone())
-                .eq("email",user.getEmail())
-                .eq("code",user.getCode())
-                .set("password",user.getPassword());
-        boolean flag = userService.update(null,updateWrapper);
+        boolean flag = userService.updateUserPwd(user);
 //        System.out.println(flag);
         if(flag) {
             return CommonResult.success();
@@ -131,21 +124,10 @@ public class LoginController {
      */
     @PostMapping("/save")
     public CommonResult saveUser(@RequestBody User user){
-        QueryWrapper<User> Tcode = new QueryWrapper<>();
-        Tcode.eq("code",user.getCode());//查找有无相同学生号
-        long c = userService.count(Tcode);
-//        System.out.println(c);
-        QueryWrapper<User> Tphone = new QueryWrapper<>();
-        Tphone.eq("phone",user.getPhone());//查找有无相同的电话号
-        long p = userService.count(Tphone);
-//        System.out.println(p);
-        QueryWrapper<User> Temail = new QueryWrapper<>();
-        Temail.eq("email",user.getEmail());//查找有无相同的邮箱
-        long e = userService.count(Temail);
-//        System.out.println(e);
-        if(c>0) return CommonResult.failed("存在该账号","code");
-        else if(p>0) return CommonResult.failed("存在该手机号","phone");
-        else if(e>0) return CommonResult.failed("存在该邮箱","email");
+        String code = userService.checkUser(user);
+        if(code.equals("01")) return CommonResult.failed("存在该账号","code");
+        else if(code.equals("02")) return CommonResult.failed("存在该手机号","phone");
+        else if(code.equals("03")) return CommonResult.failed("存在该邮箱","email");
         else{
             userService.save(user);
             return CommonResult.success();

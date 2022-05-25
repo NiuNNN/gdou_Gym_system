@@ -4,9 +4,7 @@
       <span>广东海洋大学体育管理平台</span>
     </div>
     <div class="userinfo">
-      <el-avatar :size="60">
-        <img :src="getImgUrl()" alt="">
-      </el-avatar>
+      <img :src="imgUrl" alt="">
       <span style="font-size:13px">欢迎回来，{{ username }}</span>
       <el-button type="primary" plain @click="loginout">退出</el-button>
     </div>
@@ -18,6 +16,7 @@ import request from '@/utils/request.js'
 export default {
   data() {
     return {
+      imgUrl:'',
     }
   },
   created(){
@@ -47,18 +46,18 @@ export default {
     },
     getImgUrl(){
       let userid = localStorage.getItem('userid')
-      var imgUrl=''
+      this.user = userid
       request({
         url:'/users/toGetUserAvatar/'+userid,
         method:'Get',
       }).then(res=>{
         let code = res.data.code
         if(code === 200){
-          imgUrl=res.data.data
+          this.imgUrl=res.data.data
          /*  const binaryData = [];
           binaryData.push(imgUrl);
           this.$refs.imgCode.src = window.URL.createObjectURL(new Blob(binaryData,{type:'application/jpg;chartset=UTF-8'})); */
-          console.log(imgUrl);
+          console.log(this.imgUrl);
         }
         else{
           console.log(res.data);
@@ -66,7 +65,6 @@ export default {
       })
       // let userid = localStorage.getItem('userid')
       // let imgUrl ='http://localhost:80/images/avatar/'+ userid + '.jpg'
-      return imgUrl
     }
   },
 }
@@ -100,10 +98,13 @@ export default {
       margin-left: 30px;
     }
   }
-  .el-avatar--circle{
+  img{
     position: relative;
     top: 18px;
     right: 14px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
   }
 }
 </style>

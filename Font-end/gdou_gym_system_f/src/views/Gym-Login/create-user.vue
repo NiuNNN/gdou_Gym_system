@@ -76,7 +76,7 @@ export default {
     // 手机文本框检索
     const validatePhone = (rule, value, callback) => {
       const phone = /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
-      if (!value) {
+      if (value === '') {
         return callback(new Error('请输入手机号'))
       }
       setTimeout(() => {
@@ -140,28 +140,28 @@ export default {
       },
       rules: {
         code:[
-          { validator: validateCode, trigger: 'blur'}
+          { validator: validateCode, trigger: 'blur',required:true}
         ],
         name:[
-          { validator: validateipt, trigger: 'blur'}
+          { validator: validateipt, trigger: 'blur',required:true}
         ],
         sex:[
-          { validator: validateSex, trigger: 'blur' }
+          { validator: validateSex, trigger: 'blur' ,required:true}
         ],
         age:[
-          { validator: checkAge, trigger: 'blur' }
+          { validator: checkAge, trigger: 'blur' ,required:true}
         ],
         phone:[
-          { validator: validatePhone, trigger: 'blur' }
+          { validator: validatePhone, trigger: 'blur' ,required:true}
         ],
         email:[
-          { validator: validateEmail, trigger: 'blur' }
+          { validator: validateEmail, trigger: 'blur' ,required:true}
         ],
         pass: [
-          { validator: validatePass, trigger: 'blur' }
+          { validator: validatePass, trigger: 'blur' ,required:true}
         ],
         checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
+          { validator: validatePass2, trigger: 'blur' ,required:true}
         ]
       }
     }

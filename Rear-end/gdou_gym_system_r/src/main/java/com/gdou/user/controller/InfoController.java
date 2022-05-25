@@ -1,5 +1,6 @@
 package com.gdou.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gdou.api.CommonResult;
 import com.gdou.user.domain.User;
 import com.gdou.user.service.ISuperUserService;
@@ -19,6 +20,26 @@ public class InfoController {
     @Autowired
     private ISuperUserService superUserService;
 
+    /**
+     * 返回用户信息
+     * @param code
+     * @return
+     */
+    @GetMapping("/toGetUserInfo/{code}")
+    public CommonResult getUserInfo(@PathVariable String code){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("code",code);
+        User user = userService.getOne(queryWrapper);
+        if(user.equals("")) return CommonResult.failed();
+        return CommonResult.success(user);
+    }
+
+
+    /**
+     * 获得照片
+     * @param code
+     * @return
+     */
     @GetMapping ("/toGetUserAvatar/{code}")
     public CommonResult getAvatar(@PathVariable String code){
         String avatar = userService.getAvatar(code);
@@ -36,7 +57,7 @@ public class InfoController {
      * @return
      */
     @PostMapping("/toUploadUserAvatar")
-    public CommonResult updatAvatar(User user, MultipartFile file){
+    public CommonResult updateAvatar(User user, MultipartFile file){
         //判断文件类型
         String pType = file.getContentType();
         pType = pType.substring(pType.indexOf("/")+1);
@@ -58,5 +79,32 @@ public class InfoController {
             e.printStackTrace();
             return CommonResult.failed();
         }
+    }
+
+    /**
+     * 修改资料
+     * @param user
+     * @return
+     */
+    @PutMapping("/toUploadUser")
+    public CommonResult updateUser(@RequestBody User user){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("code",user.getCode());
+        User user1 = userService.getOne(queryWrapper);
+        //1.判断是否修改了邮箱和手机号
+        //2.判断是否存在相同的邮箱和手机号
+        if(!user1.getPhone().equals(user.getPhone())) {
+            if (userService.checkPhone(user.getPhone())) {
+                return CommonResult.failed("存在该手机号", "phone");
+            }
+        }
+        if(!user1.getEmail().equals(user.getEmail())) {
+            if (userService.checkEmail(user.getEmail())) {
+                return CommonResult.failed("存在该邮箱", "email");
+            }
+        }
+        boolean flag = userService.updateUser(user);
+        if(flag) return CommonResult.success();
+        return CommonResult.failed();
     }
 }
