@@ -107,6 +107,7 @@
 <script>
 import request from '@/utils/request.js'
 export default {
+  inject:['reload'],
   data() {
     // 年龄文本框检索
     const checkAge = (rule, value, callback) => {
@@ -229,7 +230,8 @@ export default {
     }
   },
   created(){
-    this.getuserinfo()
+    this.getuserinfo(),
+    this.getImgUrl()
   },
   methods: {
     goBack () {
@@ -250,9 +252,8 @@ export default {
           this.user.age = res.data.data.age
           this.user.phone = res.data.data.phone
           this.user.email = res.data.data.email
-          this.user.avatar = res.data.data.avatar
           this.user.zip = res.data.data.zip
-          this.user.address = res.data.data.address 
+          this.user.address = res.data.data.address
         }
       })
     },
@@ -279,6 +280,8 @@ export default {
             if(code === 200){
               this.$message.success("修改成功")
               this.dialogFormVisibleEdit = false;
+              this.getImgUrl();
+              this.reload();//刷新
             }
             else{
               if(res.data.data === 'code'){
@@ -313,6 +316,11 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
       return isJPG && isLt2M;
+    },
+    getImgUrl(){
+      let userid = localStorage.getItem('userid')
+      this.user.avatar="http://localhost/avatar/"+userid+".jpg"+"?"+Math.random()*10
+      console.log(this.user.avatar);
     },
     //修改按钮
     edit(){

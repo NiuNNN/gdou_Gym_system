@@ -25,22 +25,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public boolean addVatar(String avatar, User user) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper
-                .eq("code",user.getCode())
-                .set("avatar",avatar);
-        return userMapper.update(null, updateWrapper)>0;
-    }
-
-    /**
-     * 获取头像
-     * @param avatar
-     * @return
-     */
-    @Override
-    public String getAvatar(String avatar) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("code",avatar);
-        User user = userMapper.selectOne(queryWrapper);
-        return user.getAvatar();
+                .eq("code", user.getCode())
+                .set("avatar", avatar);
+        return userMapper.update(null, updateWrapper) > 0;
     }
 
     /**

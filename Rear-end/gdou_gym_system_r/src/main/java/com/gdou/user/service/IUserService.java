@@ -7,8 +7,6 @@ public interface IUserService extends IService<User> {
 
     boolean addVatar(String avatar, User user);
 
-    String getAvatar(String avatar);
-
     boolean updateUserPwd(User user);
 
     boolean updateUser(User user);

@@ -14,6 +14,7 @@
 <script>
 import request from '@/utils/request.js'
 export default {
+  inject:['reload'],
   data() {
     return {
       imgUrl:'',
@@ -46,25 +47,8 @@ export default {
     },
     getImgUrl(){
       let userid = localStorage.getItem('userid')
-      this.user = userid
-      request({
-        url:'/users/toGetUserAvatar/'+userid,
-        method:'Get',
-      }).then(res=>{
-        let code = res.data.code
-        if(code === 200){
-          this.imgUrl=res.data.data
-         /*  const binaryData = [];
-          binaryData.push(imgUrl);
-          this.$refs.imgCode.src = window.URL.createObjectURL(new Blob(binaryData,{type:'application/jpg;chartset=UTF-8'})); */
-          console.log(this.imgUrl);
-        }
-        else{
-          console.log(res.data);
-        }
-      })
-      // let userid = localStorage.getItem('userid')
-      // let imgUrl ='http://localhost:80/images/avatar/'+ userid + '.jpg'
+      this.imgUrl="http://localhost/avatar/"+userid+".jpg"+"?"+Math.random()*10
+      console.log(this.imgUrl);
     }
   },
 }

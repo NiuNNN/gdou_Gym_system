@@ -35,20 +35,6 @@ public class InfoController {
     }
 
 
-    /**
-     * 获得照片
-     * @param code
-     * @return
-     */
-    @GetMapping ("/toGetUserAvatar/{code}")
-    public CommonResult getAvatar(@PathVariable String code){
-        String avatar = userService.getAvatar(code);
-        if(!avatar.equals("")){
-            return CommonResult.success(avatar);
-        }
-        else return CommonResult.validateFailed();
-    }
-
 
     /**
      * 上传照片
@@ -67,10 +53,12 @@ public class InfoController {
         }
         long time=System.currentTimeMillis();
 
-        String path="C:/Users/牛/Desktop/gdou_Gym_System/Rear-end/gdou_gym_system_r/src/main/resources/static/images/avatar/"+user.getCode()+"."+pType;
+        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\avatar\\"+user.getCode()+"."+pType;
+
+//        System.out.println(path);
 
         try{
-            userService.addVatar("http://localhost:80/"+path.substring(path.indexOf("images/")),user);
+            userService.addVatar("http://localhost:80/avatar/"+user.getCode()+"."+pType,user);
             file.transferTo(new File(path));
             //文件路径保存到数据库中从而读取
             System.out.println(path);

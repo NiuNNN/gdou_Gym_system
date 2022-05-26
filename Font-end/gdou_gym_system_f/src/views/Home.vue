@@ -1,10 +1,10 @@
 <template>
   <el-container class="home-container">
-    <el-header style="height: 80px;"><Navbar></Navbar></el-header>
+    <el-header style="height: 80px;" v-if="isRouterAlive"><Navbar></Navbar></el-header>
     <el-container>
       <el-aside width="200px"><Aside></Aside></el-aside>
       <el-main>
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -14,10 +14,28 @@
 import Navbar from '@/components/navbar.vue'
 import Aside from '@/components/aside.vue'
 export default {
+  provide(){
+    return {
+        reload: this.reload
+    };
+  },
+  data() {
+    return {
+      isRouterAlive:true
+    }
+  },
   components:{
     Navbar,
     Aside
   },
+  methods:{
+     reload() {
+        this.isRouterAlive = false;
+        this.$nextTick(function () {
+            this.isRouterAlive = true;
+        });
+    }
+  }
 }
 </script>
 
