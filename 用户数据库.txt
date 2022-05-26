@@ -1,0 +1,32 @@
+新建一个Schema 命名为 ：gym_system
+/******************************************************/
+创建superuser表格：
+CREATE TABLE `superuser` (
+  `code` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `phone` varchar(11) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `sex` varchar(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  `age` int NOT NULL,
+  `avatar` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `zip` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+/******************************************************/
+创建user表格：
+CREATE TABLE `user` (
+  `code` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` varchar(11) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `sex` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  `age` int NOT NULL,
+  `zip` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `avatar` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+

@@ -1,0 +1,51 @@
+前端技术：Vue(2.x)+VueX+router+element-ui+axios（插件都已经安装好了，只需要下一个node.js然后安装个webpack脚手架就可以了，没安装的网上有教程）
+打开项目 直接：npm run serve就可以跑了
+
+路由router定义文件 src/router/index.js（可以仿照着我之前的写）
+接口定义定义文件在src/utils/request.js（不需要修改，后端使用80端口已经弄好了）
+
+如果觉得在vue文件里面编写不美观 可以把js文件写到api文件下
+
+登录模块中我设置了localStorage 相当于session的东西 里面保存了 “用户名 用户号 用户级别”
+
+例如：要在页面中获得用户的账号（学号） 通过localStorage.getItem('userid')就可以获得 详细命名可以看store文件里的index.js文件
+
+ps：不要引入bootstrap！！！会和element-ui产生冲突  sore文件不要动
+
+后端技术：springboot+lombok+mybatis-plus+MySQL(插件都已经安装好了)
+
+domian层:
+	lombok：在写domain时候 直接在上面加一个@Data就自动帮你set get构造方法了 文件命名：User.java
+ps:这个和你数据库紧密相连 如果你数据库名称叫("user") 需要添加的注释就是@TableName("user")
+
+Dao层 用接口extends BaseMapper<domian里的> 就可以写 extends BaseMapper<User> 文件命名：UserMapper
+ps:记得加注解@Mapper 使用的是Mybatis-plus 可以点进去看一下有什么方法亦或者上网看一下语句怎么写(so easy)
+
+service层  一般文件的命名方式为I****.java 用接口 extends IService<domian里的> 就可以写成 extends IService<User> 文件名为：IUserService
+再在service里创建一个impl包 用于实现接口 例如：public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService
+（找找规律 简单简单）
+
+conrtoller层：
+
+一般我们的前后端交互都会有一个交互码 所以我在api包下定义了CommonResult的方法 详细可以去看一下 就是如果正确
+我就 return CommonResult.success() 当然都是可以传参进去的 详细函数的调用你们自己看一下CommonResult.java这个文件 
+然后如果你想看他返回什么状态码 返回什么默认信息 在ResultCode.java里面定义好了
+
+接口采用RestFul风格 可以百度一下 模仿我的controller进行写就可以了
+发送请求 POST 
+更新请求 PUT
+获取请求 GET
+删除请求 DELETE
+ps：前端axios请求方法也是一样 比如你后端写@PostMapper -post请求 前端的请求方法就写 method:‘post’
+
+启动文件就点击那个Application文件然后启动就可以了
+ps:千万不要随意修改api、config下的文件
+
+然后你们链接各自的数据库密码不一样 可以打开项目下面 有一个 application.yml文件里面有username和password
+我想大家统一都是username：root password：123456 这样就可以避免提交的时候会有问题代码冲突
+
+那些git语言我也不是很熟练 大家一起上网学习一下咯
+
+有不懂记得在群里面问 一起解决~~~~
+
+
