@@ -15,6 +15,7 @@ import Main from '@/views/Main.vue';
 
 // User
 import UserInfo from '@/views/Gym-User/user-info.vue'; //修改用户信息
+import UserPwd from '@/views/Gym-User/user-pwd.vue';//修改用户密码
 
 
 // 导入不拦截地址
@@ -42,7 +43,8 @@ const routes = [
     redirect:'/home/main',
     children:[
       {path: 'main', component: Main},
-      {path:'user_info',component:UserInfo}
+      {path:'user_info',component:UserInfo},
+      {path:'user_pwd',component:UserPwd}
     ]
   },
 ]

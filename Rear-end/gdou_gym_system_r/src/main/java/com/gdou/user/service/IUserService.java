@@ -17,4 +17,6 @@ public interface IUserService extends IService<User> {
     boolean checkPhone(String phone);
 
     boolean checkEmail(String email);
+
+
 }

@@ -16,8 +16,8 @@
           </el-menu-item-group>
           <el-menu-item-group>
             <template slot="title">修改用户资料</template>
-            <el-menu-item index="/home/user_info"><i class="el-icon-edit"></i>修改用户信息</el-menu-item>
-            <el-menu-item index="1-4"><i class="el-icon-edit"></i>修改密码</el-menu-item>
+            <el-menu-item index="/home/user_info"><i class="el-icon-edit"></i>修改个人信息</el-menu-item>
+            <el-menu-item index="/home/user_pwd"><i class="el-icon-edit"></i>修改密码</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <!-- 场地部分 -->
