@@ -1,0 +1,11 @@
+******************用户租借器材订单表***************
+CREATE TABLE `price_tools` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usercode` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `toolslist` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `price` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '否',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+
+toolslist 是一个tools_state id的集合

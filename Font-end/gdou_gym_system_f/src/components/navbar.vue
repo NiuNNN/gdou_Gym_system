@@ -39,12 +39,14 @@ export default {
   },
   methods: {
     loginout(){
-      localStorage.removeItem('userid')
-      localStorage.removeItem('username');
-      localStorage.removeItem('Authorization');
-      localStorage.removeItem('signTime');
-      localStorage.removeItem('userclass')
-      this.$router.push('/user_login');
+      this.$confirm("此操作为退出登录，是否继续？","提示",{type:"info"}).then(res=>{
+        localStorage.removeItem('userid')
+        localStorage.removeItem('username');
+        localStorage.removeItem('Authorization');
+        localStorage.removeItem('signTime');
+        localStorage.removeItem('userclass')
+        this.$router.push('/user_login');
+      })
     },
     getImgUrl(){
       let userid = localStorage.getItem('userid')

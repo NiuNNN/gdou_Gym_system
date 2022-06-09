@@ -26,7 +26,7 @@ public class ToolsController {
      * @param currentPage 当前页数
      * @param pageSize 页面大小
      * @param tools 器材
-     * @return
+     * @return page 返回器材数据
      */
     @GetMapping("getAll/{token}/{currentPage}/{pageSize}")
     public CommonResult getTools(@PathVariable String token,@PathVariable int currentPage, @PathVariable int pageSize, Tools tools){

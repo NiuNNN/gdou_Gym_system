@@ -67,4 +67,18 @@ public class controllerTestCase {
         }
         System.out.println(list);
     }
+
+    @Test
+    void testList_toString(){
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        String str ="";
+        for (int i = 0;i<list.size();i++){
+            str+=list.get(i);
+            if(i != list.size()-1) str+=",";
+        }
+        System.out.println(str);
+    }
 }

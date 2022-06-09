@@ -2,18 +2,17 @@
 CREATE TABLE `tools` (
   `id` int NOT NULL AUTO_INCREMENT,
   `kind` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
-  `state` int NOT NULL,
-  `price` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
-  `safe` int NOT NULL,
+  `price` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `safe` varchar(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '否',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
 
 ***********************器材种类表*********************
 CREATE TABLE `tools_kind` (
   `id` int NOT NULL AUTO_INCREMENT,
   `kind` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
 
 **********************器材维修表**********************
 CREATE TABLE `tools_safe` (
@@ -25,8 +24,13 @@ CREATE TABLE `tools_safe` (
 
 ***********************器材租用表**********************
 CREATE TABLE `tools_state` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `usercode` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
   `toolscode` int NOT NULL,
-  `time` datetime NOT NULL,
-  PRIMARY KEY (`usercode`,`toolscode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+  `date` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int NOT NULL,
+  `actually` datetime DEFAULT NULL,
+  `receive` varchar(3) COLLATE utf8_unicode_ci NOT NULL DEFAULT '未领取',
+  `exist` varchar(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '在',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci

@@ -49,7 +49,7 @@
           <span slot="title" class="black" index="">器材管理</span>
         </el-menu-item>
         <el-menu-item-group>
-          <el-menu-item index="/home/tools_borrow">器材租用</el-menu-item>
+          <el-menu-item index="/home/tools_borrow">器材预约</el-menu-item>
           <el-menu-item index="4-2">器材返还</el-menu-item>
         </el-menu-item-group>
         <!-- 管理员部分 -->

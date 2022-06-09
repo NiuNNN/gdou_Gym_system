@@ -60,7 +60,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         for(int i=0;i<l1.size();i++){
             list.add(l1.get(i).getId());
         }
-        System.out.println(list);
+//        System.out.println(list);
 
         //3、然后通过时间、时间段以及器材编号查找是否又符合的器材数据
         System.out.println(date);
@@ -70,7 +70,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
                      .eq("time",time)
                      .in("toolscode",list);
         List<TState> l2 = tStateMapper.selectList(queryWrapper1);
-        System.out.println(l2);
+//        System.out.println(l2);
 
         //4、筛选出符合条件的器材 然后返回
         for (int i = 0;i<l2.size();i++){
@@ -80,7 +80,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
                 }
             }
         }
-        System.out.println(list);
+//        System.out.println(list);
         return list;
     }
 

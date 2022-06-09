@@ -66,25 +66,78 @@
                   <el-button type="primary" @click="search()" class="search" icon="el-icon-search">查询</el-button>
                 </el-col>
                 <el-col :span="3">
-                  <el-button type="primary" v-if="flag" @click="handleborrow()" class="search" icon="el-icon-s-claim">租用</el-button>
-                  <el-button type="primary" v-else disabled class="search" icon="el-icon-s-claim">租用</el-button>
+                  <el-button type="primary" v-if="flag" @click="handleborrow()" class="search" icon="el-icon-s-claim">预约</el-button>
+                  <el-button type="primary" v-else disabled class="search" icon="el-icon-s-claim">预约</el-button>
                 </el-col>
               </el-row>
            </el-form>
         </div>
         <div class="show-table">
-          123
+          <div class="table-container">
+            <el-table
+              :data="tableData"
+              stripe
+              style="width: 100%"
+              border>
+              <el-table-column
+                prop="id"
+                label="编号"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="kind"
+                label="种类"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="date"
+                label="预约日期">
+              </el-table-column>
+              <el-table-column
+                prop="time"
+                label="预约时间">
+              </el-table-column>
+              <el-table-column
+                prop="price"
+                label="价格">
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
       </div>
       <!-- 租用回弹 -->
-
+      <el-dialog
+        title="成功预约"
+        :visible.sync="dialogTools"
+        width="30%">
+        <el-descriptions class="margin-top" title="预约信息" :column="2">
+            <el-descriptions-item label="用户名">{{username}}</el-descriptions-item>
+            <el-descriptions-item label="用户号">{{userid}}</el-descriptions-item>
+            <el-descriptions-item label="订单编号">{{ordercode}}</el-descriptions-item>
+            <el-descriptions-item label="器材编号">{{toolscode}}</el-descriptions-item>
+          </el-descriptions>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogTools = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
+    <div class="pagination-container">
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="pagination.currentPage"
+            :page-size="pagination.pageSize"
+            layout="prev, pager, next, jumper"
+            :total="pagination.total">
+          </el-pagination>
+        </div>
+      </div>
   </div>  
 </template>
 
 <script>
 import request from '@/utils/request.js'
-import timeFormat from '@/api/time.js'
+import {timeFormat,tFormat} from '@/api/time.js'
 export default {
   data() {
     return {
@@ -94,8 +147,8 @@ export default {
         price:''
       },//预约用的表单
       priceList:[],//用于存放价格
-      count:0,
-      flag:false,
+      count:0,//可用器材数量
+      flag:false,//预约按钮
       date:'',
       timeList:[{
         lebel:'8:30~10:00',
@@ -120,17 +173,28 @@ export default {
         value:'20:30~22:00',
       }],//设置时间段
       time:'',
-      num:0,
+      num:0,//选择的器材数量
+      dialogTools:false,//成功后返回数据
       pickerOptions: {
         disabledDate(time) {
           const date = new Date();
           date.setTime(date.getTime() - 3600 * 1000 * 24)
           return time.getTime() <= date;
         }
-      }
+      },//时间选择器 date
+      ordercode:'#',//订单号
+      toolscode:'',//器材号集合
+      pagination: {//分页相关模型数据
+          currentPage: 1,//当前页码
+          pageSize:5,//每页显示的记录数
+          total:0,//总记录数
+          usercode:''
+      },
+      tableData:[]
     }
   },
   methods:{
+    //返回主页
     goBack () {
       this.$router.push('/home')
     },
@@ -170,7 +234,7 @@ export default {
         let param = ''
         param += "?kind="+this.formData.kind
         param += "&price="+this.formData.price
-        console.log(this.date);
+        // console.log(this.date);
         request({
           url:'tools/search/'+token+'/'+this.date+'/'+t+'/'+param,
           method:'get',
@@ -200,7 +264,7 @@ export default {
         })
       }
     },
-    // 预约处理
+    //预约处理
     handleborrow(){
       let token  = localStorage.getItem('Authorization')
       let usercode = localStorage.getItem('userid')
@@ -214,20 +278,94 @@ export default {
         let param=''
         param += "?kind="+this.formData.kind
         param += "&price="+this.formData.price
-        console.log(param);
+        // console.log(param);
         request({
           url:'borrows/rent/'+token+'/'+usercode+'/'+this.num+'/'+this.date+'/'+t+'/'+param,
           method:'get',
           }).then(res=>{
+            let code = res.data.code
             console.log(res);
+            if(code === 200){
+              this.$message.success("预约成功")
+              for(let i = 0;i<res.data.data.length-1;i++){
+                this.toolscode+=res.data.data[i]
+                if(i !== res.data.data.length-2) this.toolscode+=","
+              }
+              this.ordercode = res.data.data[res.data.data.length-1]
+              this.dialogTools = true
+              this.getAll()
+            }
+            else if(code === 401){
+              localStorage.removeItem('username');
+              localStorage.removeItem('Authorization');
+              localStorage.removeItem('signTime');
+              localStorage.removeItem('userclass')
+              this.$router.push('/user_login');
+            }
+            else{
+              this.$message.error('系统出错,请稍后再试')
+            }
           })
         })
       }
-    }
+    },
+    //查询用户已租用的器材
+    getAll(){
+      let token  = localStorage.getItem('Authorization')
+      this.pagination.usercode = localStorage.getItem('userid')
+      let records = []
+      request({
+        url:'/borrows/getAll/'+token+'/'+this.pagination.currentPage+'/'+this.pagination.pageSize+'/'+this.pagination.usercode,
+        method:'get'
+      }).then(res=>{
+        let code = res.data.code
+        console.log(res);
+        if(code === 200){
+          this.pagination.pageSize = res.data.data.size//表格大小
+          this.pagination.currentPage = res.data.data.current//当前页数
+          this.pagination.total = res.data.data.total//总页数
+          records= res.data.data.records
+          for (const item of records) {
+            item.time = tFormat(item.time)
+            // console.log(item.time);
+          }
+          // console.log(records);
+          this.tableData = records
+        }
+        else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+        }
+        else{
+          this.$message.error('系统出错,请稍后再试')
+        }
+      })
+    },
+    //切换页码
+    handleCurrentChange(currentPage) {
+      //修改页码值为当前选中的页码值
+      this.pagination.currentPage = currentPage;
+      //执行查询
+      this.getAll();
+    },
   },
   created() {
+    this.getAll()
     this.getKind()
   },
+  computed:{
+    userid(){
+      let userid = localStorage.getItem('userid')
+      return userid
+    },
+    username(){
+      let username = localStorage.getItem('username')
+      return username
+    }
+  }
 }
 </script>
 
@@ -268,10 +406,17 @@ export default {
         }
       }
       .show-table{
-        margin-top: 20px;
-        height: 100px;
-        background-color: pink;
+        margin-top: 50px;
       }
+    }
+  }
+  .pagination-container{
+    top: -130px;
+    position: relative;
+    width: 50%;
+    margin: 30px auto;
+    .block{
+      margin: 0 auto;
     }
   }
 }
