@@ -17,6 +17,9 @@ import Main from '@/views/Main.vue';
 import UserInfo from '@/views/Gym-User/user-info.vue'; //修改用户信息
 import UserPwd from '@/views/Gym-User/user-pwd.vue';//修改用户密码
 
+// Tools
+import ToolsInfo from '@/views/Gym-Tools/tools-info.vue';//展示用户信息进行增删
+import ToolsBor from '@/views/Gym-Tools/tools-borrow.vue';//器材租用修改
 
 // 导入不拦截地址
 import pathArr from '@/router/pathArr.js';
@@ -44,7 +47,9 @@ const routes = [
     children:[
       {path: 'main', component: Main},
       {path:'user_info',component:UserInfo},
-      {path:'user_pwd',component:UserPwd}
+      {path:'user_pwd',component:UserPwd},
+      {path:'tools_info',component:ToolsInfo},
+      {path:'tools_borrow',component:ToolsBor}
     ]
   },
 ]

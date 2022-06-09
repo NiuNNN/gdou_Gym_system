@@ -49,11 +49,11 @@
           <span slot="title" class="black" index="">器材管理</span>
         </el-menu-item>
         <el-menu-item-group>
-          <el-menu-item index="4-1">器材租用</el-menu-item>
+          <el-menu-item index="/home/tools_borrow">器材租用</el-menu-item>
           <el-menu-item index="4-2">器材返还</el-menu-item>
         </el-menu-item-group>
         <!-- 管理员部分 -->
-        <el-submenu disabled index="">
+        <el-submenu  index="">
           <template slot="title">
             <i class="el-icon-s-custom"></i>
             <span class="black">管理员</span>
@@ -73,6 +73,11 @@
           <el-submenu index="5-3">
             <template slot="title">场地管理</template>
             <el-menu-item index="5-3-1">场地公告发布</el-menu-item>
+            <el-menu-item index="5-3-2">场地预约处理</el-menu-item>
+          </el-submenu>
+          <el-submenu index="5-4">
+            <template slot="title">器材管理</template>
+            <el-menu-item index="/home/tools_info">器材管理</el-menu-item>
             <el-menu-item index="5-3-2">场地预约处理</el-menu-item>
           </el-submenu>
         </el-submenu>

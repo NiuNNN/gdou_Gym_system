@@ -1,0 +1,24 @@
+《---------------场地表---------------》
+drop table if exists state;
+create table state (
+    id       bigint         auto_increment comment '场地ID',
+    name     varchar(20)                   comment '场地名称',
+    price    decimal(10, 2)                comment '价格',
+    time  varchar(20)                      comment '时间段',
+    selected char(1)        default '否'   comment '是否已选',
+    unique index inx_name (name),
+    primary key (id)
+) comment '场地表';
+
+
+《------------------预约表---------------------》
+drop table if exists appointment;
+create table appointment(
+    id       bigint      auto_increment comment '预约ID',
+    state_id bigint                     comment '场地ID',
+    user_id bigint                       comment '用户ID',
+    week varchar(20)                      comment '星期几',
+    state_time  varchar(20)             comment '预约时间段',
+     promise  char(1)        default '否'   comment '是否失约',
+    primary key (id)
+) comment '预约表';

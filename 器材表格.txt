@@ -1,0 +1,32 @@
+*************************器材总表*****************
+CREATE TABLE `tools` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kind` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  `state` int NOT NULL,
+  `price` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  `safe` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+
+***********************器材种类表*********************
+CREATE TABLE `tools_kind` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kind` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+
+**********************器材维修表**********************
+CREATE TABLE `tools_safe` (
+  `usercode` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `toolscode` int NOT NULL,
+  `description` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`usercode`,`toolscode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+
+***********************器材租用表**********************
+CREATE TABLE `tools_state` (
+  `usercode` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `toolscode` int NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`usercode`,`toolscode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci

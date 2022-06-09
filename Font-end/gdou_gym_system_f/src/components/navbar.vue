@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     loginout(){
+      localStorage.removeItem('userid')
       localStorage.removeItem('username');
       localStorage.removeItem('Authorization');
       localStorage.removeItem('signTime');
