@@ -1,6 +1,7 @@
 package com.gdou.tools.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdou.price.dao.Price_ToolsMapper;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -56,6 +58,8 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
             if(i != l2.size()-1) str+=",";
         }
         price_tools.setToolslist(str);
+        price_tools.setDate(tState.getDate());
+        price_tools.setTime(tState.getTime());
         System.out.println(str);
 
         price_toolsMapper.insert(price_tools);
@@ -80,4 +84,45 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         tStateMapper.Page(page,lambdaQueryWrapper);*/
         return page;
     }
+
+    @Override
+    public boolean updateState(Integer id) {
+        TState tState = tStateMapper.selectById(id);
+        QueryWrapper<Price_Tools> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("usercode",tState.getUsercode())
+                .eq("date",tState.getDate())
+                .eq("time",tState.getTime());
+
+        List<Price_Tools> price_tools = price_toolsMapper.selectList(queryWrapper);
+
+
+        for (int i = 0;i<price_tools.size();i++){
+            String[] str = price_tools.get(i).getToolslist().split(",");
+            List<String> list1= Arrays.asList(str);
+            List<String> arrList = new ArrayList<String>(list1);
+            System.out.println(arrList);
+            for(int j=0;j<arrList.size();j++) {
+                if (arrList.get(j).equals(id.toString())) {
+                    arrList.remove(id.toString());
+                    String s = "";
+                    for (int z = 0; z < arrList.size(); z++) {
+                        s += arrList.get(z);
+                        if (z != arrList.size() - 1) s += ",";
+                    }
+                    UpdateWrapper<Price_Tools> updateWrapper = new UpdateWrapper<>();
+                    System.out.println(s);
+                    if(s.equals("")){
+                        price_toolsMapper.deleteById(price_tools.get(i).getId());
+                    }
+                    else{
+                        updateWrapper.eq("id", price_tools.get(i).getId()).set("toolslist", s);
+                        price_toolsMapper.update(null, updateWrapper);
+                    }
+                }
+            }
+        }
+
+        return tStateMapper.deleteById(id) > 0;
+    }
+
 }

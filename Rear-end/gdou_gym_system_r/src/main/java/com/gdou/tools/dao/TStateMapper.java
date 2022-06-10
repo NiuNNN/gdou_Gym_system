@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface TStateMapper extends BaseMapper<TState> {
 
-    String getAllSql = "select t.id,t.price,t.kind,s.date,s.time from gym_system.tools t,gym_system.tools_state s where t.id = s.toolscode and s.usercode = #{usercode}";
+    String getAllSql = "select s.toolscode,t.price,t.kind,s.date,s.time,s.id from gym_system.tools t,gym_system.tools_state s where t.id = s.toolscode and s.receive='未领取' and s.usercode = #{usercode}";
 
     @Select(getAllSql)
     Page<UserToolsVO> page(Page<UserToolsVO> page , @Param("usercode") String usercode);

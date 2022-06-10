@@ -80,7 +80,7 @@
               style="width: 100%"
               border>
               <el-table-column
-                prop="id"
+                prop="toolscode"
                 label="编号"
                 width="180">
               </el-table-column>
@@ -100,6 +100,14 @@
               <el-table-column
                 prop="price"
                 label="价格">
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    @click="handleDelete(scope.$index, scope.row)">取消预约</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -137,7 +145,7 @@
 
 <script>
 import request from '@/utils/request.js'
-import {timeFormat,tFormat} from '@/api/time.js'
+import {timeList,timeFormat,tFormat} from '@/api/time.js'
 export default {
   data() {
     return {
@@ -150,28 +158,7 @@ export default {
       count:0,//可用器材数量
       flag:false,//预约按钮
       date:'',
-      timeList:[{
-        lebel:'8:30~10:00',
-        value:'8:30~10:00',
-      },{
-        lebel:'10:00~11:30',
-        value:'10:00~11:30',
-      },{
-        lebel:'14:30~16:00',
-        value:'14:30~16:00',
-      },{
-        lebel:'16:00~17:30',
-        value:'16:00~17:30',
-      },{
-        lebel:'17:30~19:00',
-        value:'17:30~19:00',
-      },{
-        lebel:'19:00~20:30',
-        value:'19:00~20:30',
-      },{
-        lebel:'20:30~22:00',
-        value:'20:30~22:00',
-      }],//设置时间段
+      timeList:[],
       time:'',
       num:0,//选择的器材数量
       dialogTools:false,//成功后返回数据
@@ -200,6 +187,7 @@ export default {
     },
     //获取器材类型
     getKind(){
+      this.timeList = timeList
       request({
         url:"/kinds",
         method:"get"
@@ -319,7 +307,7 @@ export default {
         method:'get'
       }).then(res=>{
         let code = res.data.code
-        console.log(res);
+        // console.log(res);
         if(code === 200){
           this.pagination.pageSize = res.data.data.size//表格大小
           this.pagination.currentPage = res.data.data.current//当前页数
@@ -351,6 +339,38 @@ export default {
       //执行查询
       this.getAll();
     },
+    //删除操作
+    handleDelete(index, row) {
+      // console.log(index, row);
+      // console.log(row.id);
+      let token  = localStorage.getItem('Authorization')
+
+      this.$confirm("此操作为取消预约，是否继续？","提示",{type:"info"}).then(()=>{
+        request({
+          url:'borrows/'+token+'/'+row.id,
+          method:'delete'
+        }).then(res=>{
+          // console.log(res);
+          let code = res.data.code
+          if(code === 200){
+            this.$message.success("成功取消预约")
+          }
+          else if(code === 401){
+            localStorage.removeItem('username');
+            localStorage.removeItem('Authorization');
+            localStorage.removeItem('signTime');
+            localStorage.removeItem('userclass')
+            this.$router.push('/user_login');
+          }
+          else{
+            this.$message.error('系统出错,请稍后再试')
+          }
+        }).finally(()=>{
+          //重新加载数据
+          this.getAll();
+        })
+      })
+    }
   },
   created() {
     this.getAll()
@@ -376,7 +396,6 @@ export default {
     position: relative;
     margin: 30px auto;
     width: 98%;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     overflow: hidden;
     height: 800px;

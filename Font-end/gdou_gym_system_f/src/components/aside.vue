@@ -50,7 +50,7 @@
         </el-menu-item>
         <el-menu-item-group>
           <el-menu-item index="/home/tools_borrow">器材预约</el-menu-item>
-          <el-menu-item index="4-2">器材返还</el-menu-item>
+          <el-menu-item index="/home/tools_receive">器材租还</el-menu-item>
         </el-menu-item-group>
         <!-- 管理员部分 -->
         <el-submenu  index="">
@@ -78,7 +78,7 @@
           <el-submenu index="5-4">
             <template slot="title">器材管理</template>
             <el-menu-item index="/home/tools_info">器材管理</el-menu-item>
-            <el-menu-item index="5-3-2">场地预约处理</el-menu-item>
+            <el-menu-item index="/home/tools_rent">器材租借</el-menu-item>
           </el-submenu>
         </el-submenu>
       </el-menu>

@@ -11,4 +11,6 @@ public class Price_Tools {
     private String toolslist;//器材登记
     private String price;//需付款金额
     private String state;//付款状态
+    private String date;
+    private Integer time;
 }

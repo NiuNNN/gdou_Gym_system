@@ -9,10 +9,7 @@ import com.gdou.tools.service.ITStateService;
 import com.gdou.tools.service.IToolsService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -69,6 +66,16 @@ public class StateController {
                 page = itStateService.getPage((int)page.getPages(),pageSize,usercode);
             }
             return CommonResult.success(page);
+        }
+    }
+
+    @DeleteMapping("{token}/{id}")
+    public CommonResult delete(@PathVariable String token,@PathVariable Integer id){
+        boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
+        if(!verify) return CommonResult.unauthorized(null);
+        else {
+            if(itStateService.updateState(id)) return CommonResult.success();
+            return CommonResult.failed();
         }
     }
 

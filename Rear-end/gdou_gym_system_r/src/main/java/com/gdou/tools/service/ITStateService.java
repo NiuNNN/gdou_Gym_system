@@ -10,4 +10,5 @@ import java.util.List;
 public interface ITStateService extends IService<TState> {
     List<Integer> insert(TState tState, int num,List<Integer> toolsList);
     Page<UserToolsVO> getPage(int currentPage, int pageSize, String usercode);
+    boolean updateState(Integer id);
 }

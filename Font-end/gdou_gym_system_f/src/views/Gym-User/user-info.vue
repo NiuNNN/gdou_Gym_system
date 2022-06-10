@@ -350,7 +350,6 @@ export default {
     margin: 30px auto;
     width: 98%;
     height: 700px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     overflow: hidden;
     .left{
