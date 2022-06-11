@@ -1,11 +1,10 @@
-/*
 package com.gdou.api;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ProjectExceptionAdvice {
+public class ProjectExceptionAdvice{
     //拦截所有的异常信息
     @ExceptionHandler(Exception.class)
     public CommonResult doException(Exception ex){
@@ -16,4 +15,3 @@ public class ProjectExceptionAdvice {
         return CommonResult.failed("服务器故障，请稍后再试");
     }
 }
-*/

@@ -21,6 +21,31 @@ const timeList=[{
   lebel:'20:30~22:00',
   value:'20:30~22:00',
 }]//设置时间段
+const searchList=[{
+  lebel:'------',
+  value:'------',
+},{
+  lebel:'8:30~10:00',
+  value:'8:30~10:00',
+},{
+  lebel:'10:00~11:30',
+  value:'10:00~11:30',
+},{
+  lebel:'14:30~16:00',
+  value:'14:30~16:00',
+},{
+  lebel:'16:00~17:30',
+  value:'16:00~17:30',
+},{
+  lebel:'17:30~19:00',
+  value:'17:30~19:00',
+},{
+  lebel:'19:00~20:30',
+  value:'19:00~20:30',
+},{
+  lebel:'20:30~22:00',
+  value:'20:30~22:00',
+}]//设置时间段
 const dataFormat = function(fmt,date){
   var ret;
   var opt =
@@ -52,4 +77,4 @@ const tFormat = function(t){
   return timeArr[Number(t)-1]
 }
 
-export {timeList,dataFormat,timeFormat,tFormat} ;
+export {timeList,searchList,dataFormat,timeFormat,tFormat} ;

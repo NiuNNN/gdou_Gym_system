@@ -26,7 +26,7 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="预约时间" prop="price">
+                  <el-form-item label="预约日期" prop="price">
                     <el-date-picker
                       v-model="date"
                       type="date"
@@ -60,7 +60,7 @@
                   <el-form-item label="器材数量" prop="price">
                     <el-input-number v-model="num" :min="0" :max="count" label="器材数量"></el-input-number>
                   </el-form-item>
-                  <span><span class="ps">*请先查询再选择器材数量</span></span>
+                  <span class="ps">*请先查询再选择器材数量</span>
                 </el-col>
                 <el-col :span="3">
                   <el-button type="primary" @click="search()" class="search" icon="el-icon-search">查询</el-button>
@@ -95,7 +95,7 @@
               </el-table-column>
               <el-table-column
                 prop="time"
-                label="预约时间">
+                label="预约时间段">
               </el-table-column>
               <el-table-column
                 prop="price"
@@ -344,7 +344,6 @@ export default {
       // console.log(index, row);
       // console.log(row.id);
       let token  = localStorage.getItem('Authorization')
-
       this.$confirm("此操作为取消预约，是否继续？","提示",{type:"info"}).then(()=>{
         request({
           url:'borrows/'+token+'/'+row.id,
@@ -421,7 +420,7 @@ export default {
         }
         /deep/.el-input-number{
           margin-top: 12px;
-          width: 200px;
+          width: 204px;
         }
       }
       .show-table{

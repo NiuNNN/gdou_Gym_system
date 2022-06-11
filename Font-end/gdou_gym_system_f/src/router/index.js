@@ -20,8 +20,7 @@ import UserPwd from '@/views/Gym-User/user-pwd.vue';//修改用户密码
 // Tools
 import ToolsInfo from '@/views/Gym-Tools/tools-info.vue';//展示用户信息进行增删
 import ToolsBor from '@/views/Gym-Tools/tools-borrow.vue';//器材租用修改
-import ToolsRec from '@/views/Gym-Tools/tools-receive.vue'; //器材回收
-import ToolsRent from '@/views/Gym-Tools/tools-receive.vue';// 管理员器材租借
+import ToolsRent from '@/views/Gym-Tools/tools-rent.vue';// 管理员器材租借
 
 // 导入不拦截地址
 import pathArr from '@/router/pathArr.js';
@@ -52,7 +51,6 @@ const routes = [
       {path:'user_pwd',component:UserPwd},
       {path:'tools_info',component:ToolsInfo},
       {path:'tools_borrow',component:ToolsBor},
-      {path:'tools_receive',component:ToolsRec},
       {path:'tools_rent',component:ToolsRent},
     ]
   },

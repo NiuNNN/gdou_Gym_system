@@ -1,5 +1,6 @@
 package com.gdou.tools.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdou.api.CommonResult;
 import com.gdou.tools.domain.TState;
@@ -7,6 +8,7 @@ import com.gdou.tools.domain.Tools;
 import com.gdou.tools.domain.UserToolsVO;
 import com.gdou.tools.service.ITStateService;
 import com.gdou.tools.service.IToolsService;
+import com.gdou.user.service.IUserService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/borrows",produces="application/json")
 public class StateController {
+    @Autowired
+    private IUserService iUserService;
+
     @Autowired
     private ITStateService itStateService;
 
@@ -32,7 +37,7 @@ public class StateController {
      * @param tools 预约器材
      * @return Array[器材号,...,租借单号]
      */
-    @GetMapping("/rent/{token}/{usercode}/{num}/{date}/{time}")
+    @GetMapping("rent/{token}/{usercode}/{num}/{date}/{time}")
     public CommonResult rent( @PathVariable String token,@PathVariable String usercode,@PathVariable int num,@PathVariable String date,@PathVariable int time, Tools tools){
         boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
         if(!verify) return CommonResult.unauthorized(null);
@@ -69,6 +74,30 @@ public class StateController {
         }
     }
 
+    @GetMapping("detail/{token}/{id}/{usercode}")
+    public JSONObject getDetail(@PathVariable String token,@PathVariable Integer id,@PathVariable String usercode){
+        JSONObject result = new JSONObject();
+        boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
+        if(!verify) result.put("code",401);
+        else{
+            //获取用户名称
+            String userName = iUserService.getUserName(usercode);
+            result.put("username",userName);
+            //获取器材编号
+            String toolscode = itStateService.getToolscode(id);
+            result.put("toolscode",toolscode);
+            if(!userName.equals("") && !toolscode.equals("")) result.put("code",200);
+            else result.put("code",400);
+        }
+        return result;
+    }
+
+    /**
+     * 取消预约
+     * @param token 验证码
+     * @param id 器材订单对应编号
+     * @return CommonResult
+     */
     @DeleteMapping("{token}/{id}")
     public CommonResult delete(@PathVariable String token,@PathVariable Integer id){
         boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户

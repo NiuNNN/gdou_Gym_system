@@ -18,5 +18,5 @@ public interface IUserService extends IService<User> {
 
     boolean checkEmail(String email);
 
-
+    String getUserName(String usercode);
 }

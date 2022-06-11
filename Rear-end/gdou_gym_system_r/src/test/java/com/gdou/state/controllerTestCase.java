@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gdou.price.dao.Price_ToolsMapper;
 import com.gdou.price.domain.Price_Tools;
 import com.gdou.tools.dao.TStateMapper;
+import com.gdou.tools.dao.ToolsMapper;
 import com.gdou.tools.domain.TState;
+import com.gdou.tools.domain.Tools;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,9 @@ public class controllerTestCase {
 
     @Autowired
     private Price_ToolsMapper price_toolsMapper;
+
+    @Autowired
+    private ToolsMapper toolsMapper;
     @Test
     void testSave(){
         int num = 4;
@@ -86,5 +91,32 @@ public class controllerTestCase {
                 }
             }
         }
+    }
+    @Test
+    void testHandleReceive(){
+        //把toolslist转换成list
+        Price_Tools price_tools = price_toolsMapper.selectById(2);
+        String[] str = price_tools.getToolslist().split(",");
+        List<String> stringList= Arrays.asList(str);
+        List<String> arrList = new ArrayList<String>(stringList);//应用于存放预留器材订单编号
+        System.out.println(arrList);
+
+        //遍历tools_state表获取器材号
+        List<Integer> tList = new ArrayList<>();//用于存放器材号
+        for (int i =0;i<arrList.size();i++){
+            TState tState = tStateMapper.selectById(arrList.get(i));
+            tList.add(tState.getToolscode());
+        }
+
+        //遍历tools表 根据exist项来确认器材是否存在
+        List<Integer> list = new ArrayList<>();
+        for(int i =0;i<tList.size();i++){
+            Tools tools = toolsMapper.selectById(tList.get(i));
+            if(tools.getExist().equals("否")) {
+                list.add(tools.getId());
+            }
+        }
+
+        System.out.println(list);
     }
 }

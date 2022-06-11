@@ -72,16 +72,10 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
 
     @Override
     public Page<UserToolsVO> getPage(int currentPage, int pageSize, String usercode) {
-        QueryWrapper<TState> queryWrapper = new QueryWrapper<>();
-//        if(Strings.isNotBlank(usercode)) queryWrapper.lambda().like(TState::getUsercode,usercode);
         Page<UserToolsVO> page = new Page<>();
         page.setCurrent(currentPage);
         page.setSize(pageSize);
         tStateMapper.page(page,usercode);
-        /*LambdaQueryWrapper<TState> lambdaQueryWrapper = new LambdaQueryWrapper<TState>();
-        lambdaQueryWrapper.like(Strings.isNotEmpty(usercode),TState::getUsercode,usercode);
-        IPage page = new Page(currentPage,pageSize);
-        tStateMapper.Page(page,lambdaQueryWrapper);*/
         return page;
     }
 
@@ -125,4 +119,18 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         return tStateMapper.deleteById(id) > 0;
     }
 
+    @Override
+    public String getToolscode(Integer id) {
+        Price_Tools price_tools = price_toolsMapper.selectById(id);
+        String[] str = price_tools.getToolslist().split(",");
+        List<String> list1= Arrays.asList(str);
+        List<String> arrList = new ArrayList<String>(list1);
+        String toolscode = "";
+        for(int i = 0;i<arrList.size();i++){
+            TState tState = tStateMapper.selectById(arrList.get(i));
+            toolscode += tState.getToolscode();
+            if(i < arrList.size()-1 ) toolscode +=",";
+        }
+        return toolscode;
+    }
 }

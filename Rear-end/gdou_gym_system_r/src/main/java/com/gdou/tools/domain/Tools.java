@@ -12,4 +12,5 @@ public class Tools {
     private String kind;
     private String price;
     private String safe;
+    private String exist;
 }

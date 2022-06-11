@@ -50,8 +50,6 @@ public class ToolsController {
      */
     @PostMapping()
     public  CommonResult save(@RequestBody Tools tools) {
-        /*boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
-        if(!verify) return CommonResult.unauthorized(null);*/
         System.out.println(tools);
             boolean flag = iToolsService.save(tools);
             if (flag) return CommonResult.success();

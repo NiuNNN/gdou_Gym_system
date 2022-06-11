@@ -3,7 +3,9 @@ package com.gdou.user.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gdou.user.dao.SuperUserMapper;
 import com.gdou.user.dao.UserMapper;
+import com.gdou.user.domain.SuperUser;
 import com.gdou.user.domain.User;
 import com.gdou.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
+
+    @Autowired
+    private SuperUserMapper superUserMapper;
 
     /**
      * 添加头像
@@ -117,5 +122,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         queryWrapper.eq("email",email);
         Long e = userMapper.selectCount(queryWrapper);
         return e>0;
+    }
+
+    @Override
+    public String getUserName(String usercode) {
+        QueryWrapper<User> queryWrapper  = new QueryWrapper<>();
+        queryWrapper.eq("code",usercode);
+        User user = userMapper.selectOne(queryWrapper);
+        if(user == null){
+            QueryWrapper<SuperUser> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("code",usercode);
+            SuperUser superUser = superUserMapper.selectOne(queryWrapper1);
+            return superUser.getName();
+        }
+        else {
+            return user.getName();
+        }
     }
 }

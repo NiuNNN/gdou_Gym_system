@@ -80,6 +80,7 @@ public class CommonResult<T> {
         return failed(ResultCode.FAILED);
     }
 
+
     /**
      * 参数验证失败返回结果
      */

@@ -29,8 +29,8 @@ CREATE TABLE `tools_state` (
   `toolscode` int NOT NULL,
   `date` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `time` int NOT NULL,
-  `actually` datetime DEFAULT NULL,
+  `actually` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ractually` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `receive` varchar(3) COLLATE utf8_unicode_ci NOT NULL DEFAULT '未领取',
-  `exist` varchar(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '在',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
