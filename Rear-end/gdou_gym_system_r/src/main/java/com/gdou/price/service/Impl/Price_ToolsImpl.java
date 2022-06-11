@@ -53,7 +53,7 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
         String[] str = price_tools.getToolslist().split(",");
         List<String> stringList= Arrays.asList(str);
         List<String> arrList = new ArrayList<String>(stringList);//应用于存放预留器材订单编号
-        System.out.println(arrList);
+//        System.out.println(arrList);
 
         //遍历tools_state表获取器材号
         List<Integer> tList = new ArrayList<>();//用于存放器材号
@@ -111,4 +111,20 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
         System.out.println(price_tools);
         return TimeUtil.getTime(price_tools.getDate(), price_tools.getTime());
     }
+
+    @Override
+    public boolean cancelRent(Integer id) {
+        Price_Tools price_tools = price_toolsMapper.selectById(id);
+        String[] str = price_tools.getToolslist().split(",");
+        List<String> stringList= Arrays.asList(str);
+        List<String> arrList = new ArrayList<String>(stringList);//应用于存放预留器材订单编号
+        int flag = 0;
+
+        for(int i = 0;i<arrList.size();i++){
+            flag = tStateMapper.deleteById(arrList.get(i));
+        }
+        flag = price_toolsMapper.deleteById(id);
+        return flag>0;
+    }
+
 }

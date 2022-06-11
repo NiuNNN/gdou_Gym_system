@@ -338,7 +338,7 @@ export default {
     position: relative;
     margin: 30px auto;
     width: 98%;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     overflow: hidden;
     height: 800px;
@@ -364,7 +364,10 @@ export default {
 }
 </style>
 <style>
-.el-dialog__body{
+.add-form .el-dialog{
+  height: 320px;
+}
+.add-form .el-dialog__body{
   height: 130px;
 }
 .ps{

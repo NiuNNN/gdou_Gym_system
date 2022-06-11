@@ -6,10 +6,7 @@ import com.gdou.price.domain.Price_Tools;
 import com.gdou.price.service.IPrice_ToolsService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,6 +61,23 @@ public class Price_ToolsController {
             }
             else{
                 return CommonResult.failed("02");
+            }
+        }
+    }
+
+    @DeleteMapping("cancel/{token}/{id}")
+    public CommonResult cancelRent(@PathVariable String token,@PathVariable Integer id){
+        boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
+        if(!verify) return CommonResult.unauthorized(null);
+        else{
+            String code = iPrice_toolsService.overTime(id);
+            if (code.equals("02")){
+                return CommonResult.failed("02");//超过预定时间不给予取消
+            }
+            else{
+                boolean flag = iPrice_toolsService.cancelRent(id);
+                if(flag) return CommonResult.success();
+                return CommonResult.failed();
             }
         }
     }

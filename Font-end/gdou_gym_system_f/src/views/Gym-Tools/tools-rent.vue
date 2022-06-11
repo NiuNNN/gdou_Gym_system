@@ -74,8 +74,8 @@
                     @click="getDetail(scope.$index, scope.row)">查看</el-button>
                   <el-button
                     size="mini"
-                    type="danger"
-                    @click="handleReceive(scope.$index, scope.row)">删除</el-button>
+                    type="primary"
+                    @click="handleReceive(scope.$index, scope.row)">归还</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -106,6 +106,7 @@
         <el-descriptions-item label="器材编号">{{detail.toolscode}}</el-descriptions-item>
       </el-descriptions>
       <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleDelete()">取消预约</el-button>
         <el-button type="primary" @click="handle()">领取</el-button>
       </span>
     </el-dialog>
@@ -291,6 +292,30 @@ export default {
     },
     //取消预约
     handleDelete(){
+      let token  = localStorage.getItem('Authorization')
+      request({
+        url:'price/cancel/'+token+'/'+this.detail.ordercode,
+        method:'delete'
+      }).then(res=>{
+        // console.log(res);
+        let code = res.data.code
+        if(code === 200){
+          this.$message.success('成功取消预约')
+          this.dialoghandel1 = false
+          this.getAll()
+        }
+        else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+        }
+        else{
+          this.$message.error('系统出错,请稍后再试')
+          this.getAll()
+        }
+      })
     },
   },
   created() {

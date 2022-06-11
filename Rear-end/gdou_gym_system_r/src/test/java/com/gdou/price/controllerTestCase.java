@@ -109,4 +109,11 @@ public class controllerTestCase {
 //        System.out.println(s);
 
     }
+
+    @Test
+    void testChooseTime(){
+        List<String> list = TimeUtil.chooseTime("2022-06-12");
+        System.out.println(list);
+
+    }
 }

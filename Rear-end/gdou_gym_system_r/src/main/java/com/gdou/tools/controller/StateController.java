@@ -9,6 +9,7 @@ import com.gdou.tools.domain.UserToolsVO;
 import com.gdou.tools.service.ITStateService;
 import com.gdou.tools.service.IToolsService;
 import com.gdou.user.service.IUserService;
+import com.gdou.utils.TimeUtil;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,12 @@ public class StateController {
             List<Integer> msg = itStateService.insert(tState, num, toolsList);
             return CommonResult.success(msg);//数组的最后一个数据为用户的租借订单
         }
+    }
+
+    @GetMapping("time/{date}")
+    public CommonResult getTime(@PathVariable String date){
+        List<String> list = TimeUtil.chooseTime(date);
+        return CommonResult.success(list);
     }
 
     /**

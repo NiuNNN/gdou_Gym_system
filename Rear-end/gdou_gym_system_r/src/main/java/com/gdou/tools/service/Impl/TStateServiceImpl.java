@@ -10,6 +10,7 @@ import com.gdou.tools.dao.TStateMapper;
 import com.gdou.tools.domain.TState;
 import com.gdou.tools.domain.UserToolsVO;
 import com.gdou.tools.service.ITStateService;
+import com.gdou.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,41 +83,47 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
     @Override
     public boolean updateState(Integer id) {
         TState tState = tStateMapper.selectById(id);
-        QueryWrapper<Price_Tools> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("usercode",tState.getUsercode())
-                .eq("date",tState.getDate())
-                .eq("time",tState.getTime());
+        String time = TimeUtil.getTime(tState.getDate(), tState.getTime());
+        if(time.equals("02")){
+            return false;
+        }
+        else{
+            QueryWrapper<Price_Tools> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("usercode",tState.getUsercode())
+                    .eq("date",tState.getDate())
+                    .eq("time",tState.getTime());
 
-        List<Price_Tools> price_tools = price_toolsMapper.selectList(queryWrapper);
+            List<Price_Tools> price_tools = price_toolsMapper.selectList(queryWrapper);
 
 
-        for (int i = 0;i<price_tools.size();i++){
-            String[] str = price_tools.get(i).getToolslist().split(",");
-            List<String> list1= Arrays.asList(str);
-            List<String> arrList = new ArrayList<String>(list1);
-            System.out.println(arrList);
-            for(int j=0;j<arrList.size();j++) {
-                if (arrList.get(j).equals(id.toString())) {
-                    arrList.remove(id.toString());
-                    String s = "";
-                    for (int z = 0; z < arrList.size(); z++) {
-                        s += arrList.get(z);
-                        if (z != arrList.size() - 1) s += ",";
-                    }
-                    UpdateWrapper<Price_Tools> updateWrapper = new UpdateWrapper<>();
-                    System.out.println(s);
-                    if(s.equals("")){
-                        price_toolsMapper.deleteById(price_tools.get(i).getId());
-                    }
-                    else{
-                        updateWrapper.eq("id", price_tools.get(i).getId()).set("toolslist", s);
-                        price_toolsMapper.update(null, updateWrapper);
+            for (int i = 0;i<price_tools.size();i++){
+                String[] str = price_tools.get(i).getToolslist().split(",");
+                List<String> list1= Arrays.asList(str);
+                List<String> arrList = new ArrayList<String>(list1);
+                System.out.println(arrList);
+                for(int j=0;j<arrList.size();j++) {
+                    if (arrList.get(j).equals(id.toString())) {
+                        arrList.remove(id.toString());
+                        String s = "";
+                        for (int z = 0; z < arrList.size(); z++) {
+                            s += arrList.get(z);
+                            if (z != arrList.size() - 1) s += ",";
+                        }
+                        UpdateWrapper<Price_Tools> updateWrapper = new UpdateWrapper<>();
+                        System.out.println(s);
+                        if(s.equals("")){
+                            price_toolsMapper.deleteById(price_tools.get(i).getId());
+                        }
+                        else{
+                            updateWrapper.eq("id", price_tools.get(i).getId()).set("toolslist", s);
+                            price_toolsMapper.update(null, updateWrapper);
+                        }
                     }
                 }
             }
-        }
 
-        return tStateMapper.deleteById(id) > 0;
+            return tStateMapper.deleteById(id) > 0;
+        }
     }
 
     @Override

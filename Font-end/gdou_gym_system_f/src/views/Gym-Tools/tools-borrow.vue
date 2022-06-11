@@ -32,7 +32,8 @@
                       type="date"
                       placeholder="选择日期"
                       :picker-options="pickerOptions"
-                      value-format="yyyy-MM-dd">
+                      value-format="yyyy-MM-dd"
+                      @change="getTime()">
                     </el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -42,8 +43,8 @@
                       <el-option
                         v-for="(item,index) in timeList"
                         :key="index"
-                        :label="item.label"
-                        :value="item.value">
+                        :label="item"
+                        :value="item">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -187,14 +188,11 @@ export default {
     },
     //获取器材类型
     getKind(){
-      this.timeList = timeList
       request({
         url:"/kinds",
         method:"get"
       }).then(res=>{
-        // console.log(res);
         this.kindList = res.data.data
-        // console.log(this.kindList);
       })
     },
     //获取器材价格
@@ -266,6 +264,7 @@ export default {
         let param=''
         param += "?kind="+this.formData.kind
         param += "&price="+this.formData.price
+        this.toolscode = ''
         // console.log(param);
         request({
           url:'borrows/rent/'+token+'/'+usercode+'/'+this.num+'/'+this.date+'/'+t+'/'+param,
@@ -361,6 +360,9 @@ export default {
             localStorage.removeItem('userclass')
             this.$router.push('/user_login');
           }
+          else if(code === 500){
+            this.$message.error('超过预约时间,不能取消预约')
+          }
           else{
             this.$message.error('系统出错,请稍后再试')
           }
@@ -368,6 +370,17 @@ export default {
           //重新加载数据
           this.getAll();
         })
+      })
+    },
+    //获取时间
+    getTime(){
+      console.log(this.date);
+      request({
+        url:'borrows/time/'+this.date,
+        method:'get'
+      }).then(res=>{
+        // console.log(res);
+        this.timeList = res.data.data
       })
     }
   },
