@@ -5,7 +5,9 @@ CREATE TABLE `price_tools` (
   `toolslist` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `price` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '否',
+  `date` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
 
 toolslist 是一个tools_state id的集合
