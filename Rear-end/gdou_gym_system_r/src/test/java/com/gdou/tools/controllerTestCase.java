@@ -81,4 +81,15 @@ public class controllerTestCase {
         }
         System.out.println(str);
     }
+
+    @Test
+    void testPrice(){
+        String str = "￥3.00/次";
+        String substring = str.substring(1);
+        System.out.println(substring);
+        String[] split = substring.split("/");
+        System.out.println(split[0]);
+        System.out.println(Float.valueOf(split[0]).toString()+"0");
+
+    }
 }

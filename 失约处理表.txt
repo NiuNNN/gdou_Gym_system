@@ -1,0 +1,7 @@
+CREATE TABLE `break_contract` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usercode` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `date` varchar(19) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci

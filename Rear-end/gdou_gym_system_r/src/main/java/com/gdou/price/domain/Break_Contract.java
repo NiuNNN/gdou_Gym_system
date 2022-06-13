@@ -1,18 +1,15 @@
-package com.gdou.tools.domain;
+package com.gdou.price.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("tools_state")
-public class TState {
+@TableName("break_contract")
+public class Break_Contract {
     @TableId
     private Integer id;
     private String usercode;
-    private Integer toolscode;
+    private String description;
     private String date;
-    private Integer time;
-    private String actually;
-    private String receive;
 }

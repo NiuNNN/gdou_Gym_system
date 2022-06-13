@@ -83,7 +83,11 @@ public class TimeUtil {
         }
     }
 
-
+    /**
+     * 用户选择时间 根据现在时间判断是否可选
+     * @param date
+     * @return
+     */
     public static List<String> chooseTime(String date){
         List<String> list = time();
         Calendar calendar = Calendar.getInstance();
@@ -109,5 +113,17 @@ public class TimeUtil {
         else{
             return list;
         }
+    }
+
+    /**
+     * 获取该时间段的截止时间
+     * @param time
+     * @return
+     */
+    public static String endTime(Integer time){
+        List<String> list = time();
+        String s = list.get(time - 1);
+        String[] str = s.split("-");
+        return str[1];
     }
 }

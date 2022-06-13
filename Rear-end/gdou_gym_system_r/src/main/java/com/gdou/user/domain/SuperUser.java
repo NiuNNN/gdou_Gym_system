@@ -1,11 +1,13 @@
 package com.gdou.user.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 @Data
 @TableName("superuser")
 public class SuperUser {
+    @TableId
     private String code;
     private String password;
     private String name;

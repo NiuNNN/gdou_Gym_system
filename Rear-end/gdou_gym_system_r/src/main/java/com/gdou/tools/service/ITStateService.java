@@ -12,4 +12,5 @@ public interface ITStateService extends IService<TState> {
     Page<UserToolsVO> getPage(int currentPage, int pageSize, String usercode);
     boolean updateState(Integer id);
     String getToolscode(Integer id);
+    List<String> getDateTime(Integer id);
 }

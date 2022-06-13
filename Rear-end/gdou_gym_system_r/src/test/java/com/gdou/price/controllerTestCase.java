@@ -1,6 +1,7 @@
 package com.gdou.price;
 
 import com.gdou.price.dao.Price_ToolsMapper;
+import com.gdou.price.service.IBreak_ContractService;
 import com.gdou.price.service.IPrice_ToolsService;
 import com.gdou.utils.TimeUtil;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -21,6 +23,9 @@ public class controllerTestCase {
 
     @Autowired
     private IPrice_ToolsService iPrice_toolsService;
+
+    @Autowired
+    private IBreak_ContractService iBreak_contractService;
 
     @Test
     void getTime() throws ParseException {
@@ -114,6 +119,33 @@ public class controllerTestCase {
     void testChooseTime(){
         List<String> list = TimeUtil.chooseTime("2022-06-12");
         System.out.println(list);
+    }
 
+    @Test
+    void changeRent(){
+        String s = iPrice_toolsService.changeRent(26);
+        System.out.println(s);
+    }
+
+    @Test
+    void time() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();//获取当前时间
+        Date rt = formatter.parse("2022-6-13 18:51:00");
+        long nowTime = now.getTime()-rt.getTime();//获取现在时间与租借时间的时间戳
+        long m = nowTime/1000/60;//把时间戳转换为小时
+        System.out.println(m);
+    }
+
+    @Test
+    void getPrice(){
+        final List<String> price = iPrice_toolsService.getPrice(8);
+        System.out.println(price);
+
+    }
+
+    @Test
+    void takeNotes(){
+        System.out.println(iBreak_contractService.takeNotes(8));
     }
 }

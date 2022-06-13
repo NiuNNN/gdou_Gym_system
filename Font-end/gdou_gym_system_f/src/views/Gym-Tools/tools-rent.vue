@@ -5,6 +5,7 @@
       </el-page-header>
       <div class="show">
         <div class="search-form">
+          <!-- 搜索栏 -->
           <el-form ref="formData" :model="formData"  label-position="right" label-width="100px">
             <el-row>
               <el-col :span="8">
@@ -39,6 +40,7 @@
             <span class="ps">*请先查询再选择器材数量</span>
           </el-form>
         </div>
+        <!-- 展示信息栏 -->
         <div class="show-table">
           <div class="table-container">
             <el-table
@@ -63,8 +65,8 @@
                 label="预约时间段">
               </el-table-column>
               <el-table-column
-                prop="toolslist"
-                label="器材订单编号">
+                prop="state"
+                label="是否已领取">
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
@@ -75,7 +77,7 @@
                   <el-button
                     size="mini"
                     type="primary"
-                    @click="handleReceive(scope.$index, scope.row)">归还</el-button>
+                    @click="getReceive(scope.$index, scope.row)">归还</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -83,6 +85,7 @@
         </div>
       </div>
     </div>
+    <!-- 页码选择器 -->
     <div class="pagination-container">
       <div class="block">
         <el-pagination
@@ -110,7 +113,7 @@
         <el-button type="primary" @click="handle()">领取</el-button>
       </span>
     </el-dialog>
-    <!-- 弹窗1 -->
+    <!-- 弹窗一 有器材不在仓库中 -->
     <el-dialog
       title="预约处理"
       :visible.sync="dialoghandel1"
@@ -123,8 +126,91 @@
       </el-descriptions>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleDelete()">取消预约</el-button>
-        <el-button type="primary">更换器材</el-button>
-        <el-button type="primary">继续租借</el-button>
+        <el-button type="primary" @click="changeTools()">更换器材</el-button>
+        <el-button type="primary" @click="handleRent()">继续租借</el-button>
+      </span>
+    </el-dialog>
+    <!-- 弹窗二 成功替换后的弹窗-->
+    <el-dialog
+      title="预约处理"
+      :visible.sync="dialoghandel2"
+      width="30%">
+      <el-descriptions class="margin-top" :column="2">
+        <el-descriptions-item label="器材编号">{{newTools}}</el-descriptions-item>
+      </el-descriptions>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="cancel()">确定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 弹窗三 不成功后的弹窗-->
+    <el-dialog
+      title="预约处理"
+      :visible.sync="dialoghandel3"
+      width="30%">
+      <span>没有多余的器材存在仓库中，无法进行替换</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleDelete()">取消预约</el-button>
+        <el-button type="primary" @click="handleRent()">继续租借</el-button>
+      </span>
+    </el-dialog>
+    <!-- 弹窗四 不成功后的弹窗-->
+    <el-dialog
+      title="预约处理"
+      :visible.sync="dialoghandel4"
+      width="30%">
+      <el-descriptions class="margin-top" :column="2">
+        <el-descriptions-item label="器材编号">{{newTools}}</el-descriptions-item>
+      </el-descriptions>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="cancel()">确定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 弹窗五 全部器材不在库中的弹窗-->
+    <el-dialog
+      title="预约处理"
+      :visible.sync="dialoghandel5"
+      width="30%">
+      <span>预约的器材都不在库中,已帮你取消订单</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="cancel()">确定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 回收器材 弹窗-->
+    <el-dialog
+      title="回收器材"
+      :visible.sync="dialoghandelReceive"
+      width="30%">
+      <el-descriptions class="margin-top" :column="2">
+        <el-descriptions-item label="订单编号">{{detail.ordercode}}</el-descriptions-item>
+        <el-descriptions-item label="用户号">{{detail.usercode}}</el-descriptions-item>
+        <el-descriptions-item label="器材编号">{{detail.toolscode}}</el-descriptions-item>
+        <el-descriptions-item label="预约日期">{{detail.date}}</el-descriptions-item>
+        <el-descriptions-item label="预约时间段">{{detail.time}}</el-descriptions-item>
+        <el-descriptions-item label="实际领取时间">{{detail.actually}}</el-descriptions-item>
+      </el-descriptions>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="danger" @click="handleDamage()">器材损坏</el-button>
+        <el-button type="primary" @click="handleReceive()">确定回收</el-button>
+      </span>
+    </el-dialog>
+    <!-- 租借收费显示 弹窗-->
+    <el-dialog
+      title="回收器材"
+      :visible.sync="dialoghandelReceivePrice"
+      width="30%">
+      <el-descriptions class="margin-top" :column="2">
+        <el-descriptions-item label="订单编号">{{detail.ordercode}}</el-descriptions-item>
+        <el-descriptions-item label="用户号">{{detail.usercode}}</el-descriptions-item>
+        <el-descriptions-item label="器材编号">{{detail.toolscode}}</el-descriptions-item>
+        <el-descriptions-item label="实际领取时间">{{detail.actually}}</el-descriptions-item>
+        <el-descriptions-item label="实际回收时间">{{detail.ractually}}</el-descriptions-item>
+        <el-descriptions-item label="超时" v-if="over">{{overtime}} 分钟</el-descriptions-item>
+        <el-descriptions-item label="需缴费">
+          <el-tag size="medium">￥ {{detail.price}}</el-tag>
+        </el-descriptions-item>
+      </el-descriptions>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlePay()">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -151,13 +237,28 @@ export default {
       },
       dialoghandel1:false,
       dialogdetail:false,
+      dialoghandel2:false,
+      newTools:'',//替换后返回回来的器材数据
+      dialoghandel3:false,
+      dialoghandel4:false,
+      dialoghandel5:false,
+      dialoghandelReceive:false,
+      dialoghandelReceivePrice:false,
       handelList:[],
       detail:{
         username:'',
         usercode:'',
         ordercode:'',
-        toolscode:''
+        toolscode:'',
+        actually:'',
+        date:'',
+        time:'',
+        ractually:'',
+        price:'',
+        overtime:''
       },//用于存放详细信息
+      over:false,
+      overtime:''
     }
   },
   methods:{
@@ -243,6 +344,7 @@ export default {
             this.$router.push('/user_login');
           }
           else{
+            this.dialogdetail = false;
             this.$message.error('系统出错,请稍后再试')
           }
         })
@@ -255,12 +357,12 @@ export default {
         url:'price/'+token+'/'+this.detail.ordercode,
         method:'get'
       }).then(res=>{
-        console.log(res);
+        // console.log(res);
         let code = res.data.code
         if(code === 200 ){
           this.$message.success("器材全部领取成功")
-            this.dialogdetail = false;
-            this.getAll()
+          this.dialogdetail = false;
+          this.getAll()
         }
         else if(code === 401){
           localStorage.removeItem('username');
@@ -280,11 +382,12 @@ export default {
           }
           else{
             this.dialogdetail = false;
-            this.dialoghandel1= true
             this.handelList = res.data.data
+            this.dialoghandel1= true
           }
         }
         else{
+          this.dialogdetail = false;
           this.$message.error('系统出错,请稍后再试')
           this.getAll()
         }
@@ -312,11 +415,196 @@ export default {
           this.$router.push('/user_login');
         }
         else{
+          this.dialoghandel1 = false
           this.$message.error('系统出错,请稍后再试')
           this.getAll()
         }
       })
     },
+    //更换器材
+    changeTools(){
+      let token  = localStorage.getItem('Authorization')
+      // console.log(this.detail.ordercode);
+      request({
+        url:'price/change/'+token+'/'+this.detail.ordercode,
+        method:'get'
+      }).then(res=>{
+        let code = res.data.code
+        if(code === 200){
+          this.dialoghandel1 = false;
+          this.newTools = res.data.toolslist
+          this.dialoghandel2 = true
+          this.$message.success("器材全部领取成功")
+          this.getAll()
+        }
+        else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+        }
+        else if(code === 500){
+          this.dialoghandel1 = false;
+          this.dialoghandel3 = true
+          this.$message.info('器材室中没有多余的器材进行替换')
+        }
+        else{
+          this.dialoghandel1 = false;
+          this.$message.error('系统出错,请稍后再试')
+          this.getAll()
+        }
+      })
+    },
+    //取消弹窗
+    cancel(){
+      this.dialoghandel2 = false
+      this.dialoghandel4 = false
+      this.dialoghandel5 = false
+    },
+    //继续租借
+    handleRent(){
+      this.dialoghandel1 =false
+      let token  = localStorage.getItem('Authorization')
+      request({
+        url:'price/continue'+'/'+token+'/'+this.detail.ordercode,
+        method:'get'
+      }).then(res=>{
+        let code = res.data.code
+        if(code === 200){
+          this.newTools = res.data.data
+          this.dialoghandel3 = false
+          this.dialoghandel4 = true
+          this.$message.success('器材领取成功')
+          this.getAll()
+        }
+        else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+        }
+        else if(code === 500){
+          this.dialoghandel3 = false
+          this.dialoghandel5= true
+          this.getAll()
+        }
+        else{
+          this.dialoghandel3 = false
+          this.$message.error('系统出错,请稍后再试')
+          this.getAll()
+        }
+      })
+    },
+    //获取用户的租借记录
+    getReceive(inde,row){
+      // console.log(row);
+      if(row.state === '否'){
+        this.$message.info('此订单还未领取')
+      }
+      else if(row.price !== null){
+        this.$message.info('此订单已经返还器材')
+      }
+      else{
+        // console.log(row);
+        let token  = localStorage.getItem('Authorization')
+        request({
+          url:'price/receive/'+token+'/'+row.id,
+          method:'get'
+        }).then(res=>{
+          // console.log(res);
+          let code = res.data.code
+          if(code === 200){
+            this.detail.ordercode = row.id
+            this.detail.usercode = row.usercode
+            this.detail.toolscode = res.data.toolscode
+            this.detail.actually = res.data.actually
+            this.detail.date = row.date
+            this.detail.time = row.time
+            this.dialoghandelReceive = true
+          }
+          else if(code === 401){
+            localStorage.removeItem('username');
+            localStorage.removeItem('Authorization');
+            localStorage.removeItem('signTime');
+            localStorage.removeItem('userclass')
+            this.$router.push('/user_login');
+          }
+          else{
+            this.dialogdetail = false;
+            this.$message.error('系统出错,请稍后再试')
+          }
+        })
+      }
+    },
+    //回收器材
+    handleReceive(){
+      this.dialoghandelReceive = false
+      let token  = localStorage.getItem('Authorization')
+      request({
+        url:'price/getPrice/'+token+'/'+this.detail.ordercode,
+        method:'get'
+      }).then(res=>{
+        // console.log(res);
+        let code = res.data.code
+        if( code === 200){
+          this.detail.ractually = res.data.ractually
+          this.detail.price = res.data.price
+          this.detail.overtime = res.data.overtime
+          this.overtime = res.data.overtime
+          // console.log(this.detail.overtime);
+          if(this.detail.overtime = ''){
+            this.over = false
+          }
+          else{
+            this.over = true
+          }
+          // console.log(this.over);
+          this.dialoghandelReceivePrice = true
+        }
+        else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+        }
+        else{
+          this.$message.error('系统出错,请稍后再试')
+        }
+      })
+    },
+    //确定收账
+    handlePay(){
+      // console.log(this.detail);
+      let token  = localStorage.getItem('Authorization')
+      this.$confirm("是否已经收款，确定？","提示",{type:"info"}).then(()=>{
+        request({
+          url:'price/handlePay/'+token+'/'+this.detail.ordercode+'/'+this.detail.price,
+          method:'get'
+        }).then(res=>{
+          let code = res.data.code
+          if(code === 200){
+            this.dialoghandelReceivePrice = false
+            this.$message.success('操作成功')
+            this.getAll()
+          }
+          else if(code === 401){
+          localStorage.removeItem('username');
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('signTime');
+          localStorage.removeItem('userclass')
+          this.$router.push('/user_login');
+          }
+          else{
+            this.$message.error('系统出错,请稍后再试')
+          }
+        })
+      }).catch(()=>{
+        this.$message.info("取消操作");
+      });
+    }
   },
   created() {
     this.getTime()

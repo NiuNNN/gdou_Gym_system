@@ -82,13 +82,11 @@
               border>
               <el-table-column
                 prop="toolscode"
-                label="编号"
-                width="180">
+                label="编号">
               </el-table-column>
               <el-table-column
                 prop="kind"
-                label="种类"
-                width="180">
+                label="种类">
               </el-table-column>
               <el-table-column
                 prop="date"
@@ -215,7 +213,9 @@ export default {
       if(this.formData.kind === ""||this.formData.price === ""||this.date === '' ||this.time === '') this.$message.error("请选择后查询！")
       else{
         let t = 0
+        // console.log(this.time);
         t = timeFormat(this.time)
+        // console.log(t);
         let token  = localStorage.getItem('Authorization')
         let param = ''
         param += "?kind="+this.formData.kind
@@ -256,6 +256,7 @@ export default {
       let usercode = localStorage.getItem('userid')
       let t = 0
       t = timeFormat(this.time)
+      console.log(t);
       if(this.num === 0){
         this.$message.error("请选择器材数量")
       }

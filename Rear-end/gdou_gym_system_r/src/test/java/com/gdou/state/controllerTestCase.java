@@ -8,19 +8,23 @@ import com.gdou.tools.dao.TStateMapper;
 import com.gdou.tools.dao.ToolsMapper;
 import com.gdou.tools.domain.TState;
 import com.gdou.tools.domain.Tools;
+import com.gdou.tools.service.ITStateService;
+import com.gdou.utils.TimeUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SpringBootTest
 public class controllerTestCase {
     @Autowired
     private TStateMapper tStateMapper;
+
+    @Autowired
+    private ITStateService itStateService;
 
     @Autowired
     private Price_ToolsMapper price_toolsMapper;
@@ -59,7 +63,6 @@ public class controllerTestCase {
 
     }
 
-
     @Test
     void testDelete(){
         TState tState = tStateMapper.selectById(4);
@@ -92,6 +95,7 @@ public class controllerTestCase {
             }
         }
     }
+
     @Test
     void testHandleReceive(){
         //把toolslist转换成list
@@ -118,5 +122,48 @@ public class controllerTestCase {
         }
 
         System.out.println(list);
+    }
+
+    @Test
+    void testSubtractDate() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date now = new Date();
+
+        System.out.println(now);
+
+
+        String renTime = "2022-06-10 10:00:00";
+
+        Date rt = formatter.parse(renTime);
+
+        System.out.println(rt);
+
+        long nowTime = now.getTime()-rt.getTime();
+
+        String format = formatter.format(nowTime);
+
+
+        System.out.println(nowTime/1000/(60*60));//转小时
+
+        System.out.println(format);
+
+
+    }
+
+    @Test
+    void testGetDateTime() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateTime = itStateService.getDateTime(8).get(1);
+        System.out.println(dateTime);
+        Date rt = formatter.parse(dateTime);
+        System.out.println(rt);
+
+
+    }
+
+    @Test
+    void testEndTime(){
+        System.out.println(TimeUtil.endTime(1));
     }
 }

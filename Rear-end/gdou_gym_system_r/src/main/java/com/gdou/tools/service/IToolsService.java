@@ -10,5 +10,4 @@ public interface IToolsService extends IService<Tools> {
     IPage<Tools> getPage(int currentPage,int pageSize,Tools tools);
     List<Tools> getPrice(String kind);
     List<Integer> getTools(Tools tools,String date,int time);
-    Integer  updateState(String price,String kind);
 }

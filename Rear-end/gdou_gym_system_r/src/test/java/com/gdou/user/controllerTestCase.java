@@ -36,4 +36,10 @@ public class controllerTestCase {
         System.out.println(user);
 
     }
+
+    @Test
+    void selectById(){
+        User user = userMapper.selectById("201911701310");
+        System.out.println(user);
+    }
 }

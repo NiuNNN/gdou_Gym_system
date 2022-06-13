@@ -8,6 +8,13 @@ CREATE TABLE `price_tools` (
   `date` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `time` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
-
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci
 toolslist 是一个tools_state id的集合
+
+*****************惩罚公告***********************
+CREATE TABLE `price_overtime` (
+  `id` int NOT NULL,
+  `multiple` float NOT NULL,
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci

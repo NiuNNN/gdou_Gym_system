@@ -2,7 +2,6 @@ package com.gdou.tools.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements IToolsService {
@@ -28,6 +26,13 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
     @Autowired
     private TStateMapper tStateMapper;
 
+    /**
+     * 管理员查询器材信息
+     * @param currentPage 当前页码
+     * @param pageSize 页面大小
+     * @param tools 器材
+     * @return page
+     */
     @Override
     public IPage<Tools> getPage(int currentPage, int pageSize, Tools tools) {
         LambdaQueryWrapper<Tools> lambdaQueryWrapper = new LambdaQueryWrapper<Tools>();
@@ -38,6 +43,11 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         return page;
     }
 
+    /**
+     * 根据器材种类获取相对应的金额
+     * @param kind 器材种类
+     * @return 金额
+     */
     @Override
     public List<Tools> getPrice(String kind) {
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -46,6 +56,13 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         return list;
     }
 
+    /**
+     *根据用户条件 查询是否有符合条件的器材 返回符合条件的器材
+     * @param tools 器材
+     * @param date 日期
+     * @param time 时间段
+     * @return 符合条件的器材
+     */
     @Override
     public List<Integer> getTools(Tools tools,String date,int time) {
         //1、首先查询是否有符合条件的器材 获取其id
@@ -63,8 +80,8 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
 //        System.out.println(list);
 
         //3、然后通过时间、时间段以及器材编号查找是否又符合的器材数据
-        System.out.println(date);
-        System.out.println(time);
+//        System.out.println(date);
+//        System.out.println(time);
         QueryWrapper<TState> queryWrapper1 = new QueryWrapper<TState>();
         queryWrapper1.eq("date",date)
                      .eq("time",time)
@@ -84,26 +101,4 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         return list;
     }
 
-    @Override
-    public Integer updateState(String price,String kind) {
-//        首先查找出符合条件的器材
-        QueryWrapper<Tools> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("kind",kind)
-                    .eq("price",price)
-                    .eq("state","否")
-                    .eq("safe","否");
-        List<Tools> list = toolsMapper.selectList(queryWrapper);
-
-//        生成随机数 然后从中随机取出一个
-        Random random = new Random();
-        int number = random.nextInt(list.size());
-        Tools tools = list.get(number);
-
-//        把随机取出的器材 改变状态
-        UpdateWrapper<Tools> updateWrapper = new UpdateWrapper<Tools>();
-        updateWrapper.eq("id",tools.getId()).set("state","是");
-        int update = toolsMapper.update(null,updateWrapper);
-        if(update>0) return tools.getId();
-        return 0;
-    }
 }

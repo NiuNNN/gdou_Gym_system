@@ -27,6 +27,13 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
     @Autowired
     private Price_ToolsMapper price_toolsMapper;
 
+    /**
+     *根据时间要求 查询是否有器材选择
+     * @param tState
+     * @param num 需要的器材数量
+     * @param toolsList 可用器材链表
+     * @return
+     */
     @Override
     public List<Integer> insert(TState tState, int num,List<Integer> toolsList) {
         List<Integer> l1 = new ArrayList<>();//用户返回给用户器材id
@@ -71,6 +78,13 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         return l1;
     }
 
+    /**
+     * 用户获取已经预约器材信息
+     * @param currentPage
+     * @param pageSize
+     * @param usercode
+     * @return
+     */
     @Override
     public Page<UserToolsVO> getPage(int currentPage, int pageSize, String usercode) {
         Page<UserToolsVO> page = new Page<>();
@@ -80,6 +94,11 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         return page;
     }
 
+    /**
+     * 直接取消订单
+     * @param id 订单号
+     * @return
+     */
     @Override
     public boolean updateState(Integer id) {
         TState tState = tStateMapper.selectById(id);
@@ -126,6 +145,11 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         }
     }
 
+    /**
+     * 根据 订单号 获取器材编号
+     * @param id
+     * @return
+     */
     @Override
     public String getToolscode(Integer id) {
         Price_Tools price_tools = price_toolsMapper.selectById(id);
@@ -140,4 +164,26 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         }
         return toolscode;
     }
+
+    /**
+     * 获取 预约截止时间 租借时间
+     * @param id
+     * @return
+     */
+    @Override
+    public List<String> getDateTime(Integer id) {
+        List<String> list = new ArrayList<>();//第一个数为预约时间的截至时间 第二个时间为租借时间
+        Price_Tools price_tools = price_toolsMapper.selectById(id);
+        String[] str = price_tools.getToolslist().split(",");
+        List<String> list1= Arrays.asList(str);
+        List<String> arrList = new ArrayList<String>(list1);
+        TState tState = tStateMapper.selectById(arrList.get(0));
+        String date = tState.getDate();
+        String time = TimeUtil.endTime(tState.getTime());
+        list.add(date+" "+time);
+        String[] actually = tState.getActually().split(",");
+        list.add(actually[0]+" "+actually[1]);
+        return list;
+    }
+
 }
