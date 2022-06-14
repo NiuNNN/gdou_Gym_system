@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface IToolsService extends IService<Tools> {
     IPage<Tools> getPage(int currentPage,int pageSize,Tools tools);
+    IPage<Tools> getExistPage(int currentPage,int pageSize,Tools tools);
     List<Tools> getPrice(String kind);
     List<Integer> getTools(Tools tools,String date,int time);
+    boolean fixTools(Integer id);
+    boolean upTools(Integer id);
+    boolean deleteTools(Integer id);
 }

@@ -14,5 +14,6 @@ public class TState {
     private String date;
     private Integer time;
     private String actually;
+    private String ractually;
     private String receive;
 }

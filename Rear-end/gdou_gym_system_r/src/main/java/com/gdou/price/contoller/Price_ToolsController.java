@@ -6,6 +6,7 @@ import com.gdou.api.CommonResult;
 import com.gdou.price.domain.Price_Tools;
 import com.gdou.price.service.IBreak_ContractService;
 import com.gdou.price.service.IPrice_ToolsService;
+import com.gdou.price.service.IUnreceive_Tools;
 import com.gdou.tools.service.ITStateService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class Price_ToolsController {
 
     @Autowired
     private IBreak_ContractService iBreak_contractService;
+
+    @Autowired
+    private IUnreceive_Tools iUnreceive_tools;
 
     /**
      * 对用户的租借信息进行查询
@@ -192,6 +196,13 @@ public class Price_ToolsController {
         return result;
     }
 
+    /**
+     * 确认收款把收款信息写入订单
+     * @param token
+     * @param id
+     * @param price
+     * @return
+     */
     @GetMapping("handlePay/{token}/{id}/{price}")
     public CommonResult handlePay(@PathVariable String token,@PathVariable Integer id,@PathVariable String price){
         boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
@@ -201,4 +212,16 @@ public class Price_ToolsController {
             return CommonResult.failed();
         }
     }
+
+    /**
+     * 对用户超时未领取器材进行登记
+     * @param id
+     * @return
+     */
+    @GetMapping("register/{id}")
+    public CommonResult register(@PathVariable Integer id){
+        iUnreceive_tools.register(id);
+        return CommonResult.success();
+    }
+
 }

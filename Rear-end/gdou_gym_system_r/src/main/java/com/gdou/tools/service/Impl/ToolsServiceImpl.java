@@ -2,6 +2,7 @@ package com.gdou.tools.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,7 +32,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
      * @param currentPage 当前页码
      * @param pageSize 页面大小
      * @param tools 器材
-     * @return page
+     * @return IPage
      */
     @Override
     public IPage<Tools> getPage(int currentPage, int pageSize, Tools tools) {
@@ -43,6 +44,26 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         return page;
     }
 
+    /**
+     * 管理员查询所有存在的器材信息
+     * @param currentPage 当前页码
+     * @param pageSize 页面大小
+     * @param tools 器材
+     * @return IPage
+     */
+    @Override
+    public IPage<Tools> getExistPage(int currentPage, int pageSize, Tools tools)
+    {
+        tools.setExist("是");
+        LambdaQueryWrapper<Tools> lambdaQueryWrapper = new LambdaQueryWrapper<Tools>();
+        lambdaQueryWrapper.like(Strings.isNotEmpty(tools.getKind()),Tools::getKind,tools.getKind());
+        lambdaQueryWrapper.like(Strings.isNotEmpty(tools.getSafe()),Tools::getSafe,tools.getSafe());
+        lambdaQueryWrapper.like(Strings.isNotEmpty(tools.getSafe()),Tools::getSafe,tools.getSafe());
+        lambdaQueryWrapper.like(Strings.isNotEmpty(tools.getSafe()),Tools::getSafe,tools.getSafe());
+        IPage page = new Page(currentPage,pageSize);
+        toolsMapper.selectPage(page,lambdaQueryWrapper);
+        return page;
+    }
     /**
      * 根据器材种类获取相对应的金额
      * @param kind 器材种类
@@ -101,4 +122,41 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         return list;
     }
 
+    /**
+     * 对器材进行维修
+     * @param id 器材id
+     * @return
+     */
+    @Override
+    public boolean fixTools(Integer id) {
+        UpdateWrapper<Tools> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id)
+                .set("exist","否")
+                .set("safe","是");
+        return toolsMapper.update(null,updateWrapper)>0;
+    }
+
+    /**
+     * 上架器材
+     * @param id 器材id
+     * @return
+     */
+    @Override
+    public boolean upTools(Integer id) {
+        UpdateWrapper<Tools> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id)
+                .set("exist","是")
+                .set("safe","否");
+        return toolsMapper.update(null,updateWrapper)>0;
+    }
+
+    /**
+     * 器材报废删除
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean deleteTools(Integer id) {
+        return toolsMapper.deleteById(id)>0;
+    }
 }

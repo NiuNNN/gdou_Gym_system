@@ -62,6 +62,7 @@
                     <el-input-number v-model="num" :min="0" :max="count" label="器材数量"></el-input-number>
                   </el-form-item>
                   <span class="ps">*请先查询再选择器材数量</span>
+                  <span class="ps" @click="open" style="cursor:pointer">*点击查看器材相关收费</span>
                 </el-col>
                 <el-col :span="3">
                   <el-button type="primary" @click="search()" class="search" icon="el-icon-search">查询</el-button>
@@ -73,6 +74,7 @@
               </el-row>
            </el-form>
         </div>
+        <!-- 预约信息 -->
         <div class="show-table">
           <div class="table-container">
             <el-table
@@ -128,6 +130,7 @@
         </span>
       </el-dialog>
     </div>
+    <!-- 页码 -->
     <div class="pagination-container">
         <div class="block">
           <el-pagination
@@ -176,7 +179,8 @@ export default {
           total:0,//总记录数
           usercode:''
       },
-      tableData:[]
+      tableData:[],
+      fine:''
     }
   },
   methods:{
@@ -383,11 +387,25 @@ export default {
         // console.log(res);
         this.timeList = res.data.data
       })
+    },
+    //器材罚款显示
+    open() {
+      this.$alert(this.fine, '器材收费标准', {
+        confirmButtonText: '了解'});
+    },
+    getFine(){
+      request({
+        url:'borrows/getFine',
+        method:'get'
+      }).then(res=>{
+        this.fine = res.data.data
+      })
     }
   },
   created() {
     this.getAll()
     this.getKind()
+    this.getFine()
   },
   computed:{
     userid(){
@@ -407,7 +425,7 @@ export default {
   width: 100%;
   .descriptions-box{
     position: relative;
-    margin: 30px auto;
+    margin: 0 auto;
     width: 98%;
     border-radius: 4px;
     overflow: hidden;

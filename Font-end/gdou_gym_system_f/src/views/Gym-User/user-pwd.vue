@@ -123,7 +123,7 @@ export default {
   width: 100%;
   .descriptions-box{
     position: relative;
-    margin: 30px auto;
+    margin: 0 auto;
     width: 98%;
     border-radius: 4px;
     overflow: hidden;

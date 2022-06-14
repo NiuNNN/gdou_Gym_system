@@ -37,7 +37,6 @@
                 </el-col>
             </el-row>
             <el-button type="primary" @click="getAll()" class="search" icon="el-icon-search">查询</el-button>
-            <span class="ps">*请先查询再选择器材数量</span>
           </el-form>
         </div>
         <!-- 展示信息栏 -->
@@ -179,17 +178,16 @@
     <el-dialog
       title="回收器材"
       :visible.sync="dialoghandelReceive"
-      width="30%">
+      width="40%">
       <el-descriptions class="margin-top" :column="2">
         <el-descriptions-item label="订单编号">{{detail.ordercode}}</el-descriptions-item>
         <el-descriptions-item label="用户号">{{detail.usercode}}</el-descriptions-item>
         <el-descriptions-item label="器材编号">{{detail.toolscode}}</el-descriptions-item>
         <el-descriptions-item label="预约日期">{{detail.date}}</el-descriptions-item>
-        <el-descriptions-item label="预约时间段">{{detail.time}}</el-descriptions-item>
-        <el-descriptions-item label="实际领取时间">{{detail.actually}}</el-descriptions-item>
+        <el-descriptions-item label="预约时间段" >{{detail.time}}</el-descriptions-item>
+        <el-descriptions-item label="实际领取时间" >{{detail.actually}}</el-descriptions-item>
       </el-descriptions>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handleDamage()">器材损坏</el-button>
         <el-button type="primary" @click="handleReceive()">确定回收</el-button>
       </span>
     </el-dialog>
@@ -197,7 +195,7 @@
     <el-dialog
       title="回收器材"
       :visible.sync="dialoghandelReceivePrice"
-      width="30%">
+      width="40%">
       <el-descriptions class="margin-top" :column="2">
         <el-descriptions-item label="订单编号">{{detail.ordercode}}</el-descriptions-item>
         <el-descriptions-item label="用户号">{{detail.usercode}}</el-descriptions-item>
@@ -211,6 +209,18 @@
       </el-descriptions>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handlePay()">确定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 超时处理 -->
+    <el-dialog
+      title="超时未领取处理"
+      :visible.sync="dialogVisibleOverTime"
+      width="30%"
+      :before-close="handleClose">
+      <span>请选择操作</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="register()">登 记</el-button>
+        <el-button type="primary" @click="Pay()">缴 费</el-button>
       </span>
     </el-dialog>
   </div>
@@ -244,6 +254,7 @@ export default {
       dialoghandel5:false,
       dialoghandelReceive:false,
       dialoghandelReceivePrice:false,
+      dialoghandelhandleDamage:false,
       handelList:[],
       detail:{
         username:'',
@@ -258,7 +269,10 @@ export default {
         overtime:''
       },//用于存放详细信息
       over:false,
-      overtime:''
+      overtime:'',
+      damageOption:[],
+      damage:[],
+      dialogVisibleOverTime:false
     }
   },
   methods:{
@@ -379,6 +393,8 @@ export default {
           }
           else if(res.data.message === '02'){
             this.$message.error('超过预定领取时间，请进行下一步操作')
+            this.dialogVisibleOverTime = true
+            this.dialogdetail = false;
           }
           else{
             this.dialogdetail = false;
@@ -504,7 +520,7 @@ export default {
         this.$message.info('此订单还未领取')
       }
       else if(row.price !== null){
-        this.$message.info('此订单已经返还器材')
+        this.$message.info('此订单已经归还器材')
       }
       else{
         // console.log(row);
@@ -559,6 +575,7 @@ export default {
           }
           else{
             this.over = true
+            this.$message.error("超时归还！")
           }
           // console.log(this.over);
           this.dialoghandelReceivePrice = true
@@ -604,6 +621,34 @@ export default {
       }).catch(()=>{
         this.$message.info("取消操作");
       });
+    },
+    //对超时进行登记
+    register(){
+      request({
+        url:'',
+        method:'get'
+      }).then(res=>{
+        console.log(res);
+        this.$message.success('已对用户超时未领取进行登记')
+      }).finally(()=>{
+        this.dialogVisibleOverTime = false
+        this.getAll();
+      })
+    },
+    //对超时未领取的订单进行缴费
+    Pay(){
+       this.$confirm("是否已经收款，确定？","提示",{type:"info"}).then(()=>{
+        request({
+          url:'',
+          method:'get'
+        }).then(res=>{
+          console.log(res);
+          this.$message.success('已对用户超时未领取进行登记')
+        }).finally(()=>{
+          this.dialogVisibleOverTime = false
+          this.getAll();
+        })
+      })
     }
   },
   created() {
@@ -618,7 +663,7 @@ export default {
   width: 100%;
   .descriptions-box{
     position: relative;
-    margin: 30px auto;
+    margin: 0 auto;
     width: 98%;
     border-radius: 4px;
     overflow: hidden;

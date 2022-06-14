@@ -15,5 +15,6 @@ public interface IPrice_ToolsService extends IService<Price_Tools> {
     String continueRent(Integer id);
     List<String> getPrice(Integer id);
     boolean handlePay(Integer id,String price);
+    List<Integer> getPriceTools(Integer id);
     
 }

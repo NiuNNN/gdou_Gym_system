@@ -43,6 +43,20 @@ public class ToolsController {
 
     }
 
+    @GetMapping("getExistAll/{token}/{currentPage}/{pageSize}")
+    public CommonResult getExistAll(@PathVariable String token,@PathVariable int currentPage, @PathVariable int pageSize, Tools tools){
+        boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
+        if(!verify) return CommonResult.unauthorized(null);
+        else{
+            IPage<Tools> page = iToolsService.getExistPage(currentPage,pageSize,tools);
+            //如果当前页码大于了总页码值，那么重新执行查询操作，使用最大页码值作为当前页码值
+            if(currentPage>page.getPages()){
+                page = iToolsService.getExistPage((int)page.getPages(),pageSize,tools);
+            }
+            return CommonResult.success(page);
+        }
+    }
+
     /**
      * 添加新器材
      * @param tools 器材
@@ -88,5 +102,37 @@ public class ToolsController {
             List<Integer> toolsCode = iToolsService.getTools(tools, date, time);
             return CommonResult.success(toolsCode.size());
         }
+    }
+
+
+    /**
+     * 对器材进行维修
+     * @param id 器材id
+     * @return
+     */
+    @GetMapping("fix/{id}")
+    public CommonResult fixTools(@PathVariable Integer id){
+        boolean flag = iToolsService.fixTools(id);
+        if(flag) return CommonResult.success();
+        return CommonResult.failed();
+    }
+
+    /**
+     * 对器材进行上架
+     * @param id 器材id
+     * @return
+     */
+    @GetMapping("up/{id}")
+    public CommonResult upTools(@PathVariable Integer id){
+        boolean flag = iToolsService.upTools(id);
+        if(flag) return CommonResult.success();
+        return CommonResult.failed();
+    }
+
+    @DeleteMapping("{id}")
+    public CommonResult deleteTools(@PathVariable Integer id){
+        boolean flag = iToolsService.deleteTools(id);
+        if(flag) return CommonResult.success();
+        return CommonResult.failed();
     }
 }

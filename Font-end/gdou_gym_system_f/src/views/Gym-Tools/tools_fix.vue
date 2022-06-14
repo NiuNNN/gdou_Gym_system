@@ -1,13 +1,12 @@
 <template>
-    <div class="descriptions-container">
-      <div class="descriptions-box">
-        <el-page-header @back="goBack" content="器材管理" title="返回主页">
-        </el-page-header>
-        <div class="btn">
-          <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleCreate()">添加</el-button>
-          <el-button type="primary" icon="el-icon-search" @click="handleSearch()">搜索</el-button>
-        </div>
-        <!-- 表格组件 -->
+  <div class="descriptions-container">
+    <div class="descriptions-box">
+      <el-page-header @back="goBack" content="器材维护" title="返回主页">
+      </el-page-header>
+      <div class="btn">
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch()">搜索</el-button>
+      </div>
+      <!-- 表格组件 -->
         <div class="table-container">
           <el-table
             :data="tableData"
@@ -29,11 +28,18 @@
               prop="safe"
               label="是否需要维修">
             </el-table-column>
+            <el-table-column label="操作" align="center">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="handlefix(scope.$index, scope.row)" v-if="scope.row.safe === '否'">维护</el-button>
+                <el-button type="primary" size="mini" @click="handleup(scope.$index, scope.row)" v-else>上架</el-button>
+                <el-button type="danger" size="mini" @click="handledelete(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
-      </div>
-      <!-- 分页组件 -->
-      <div class="pagination-container">
+    </div>
+    <!-- 分页组件 -->
+    <div class="pagination-container">
         <div class="block">
           <el-pagination
             @current-change="handleCurrentChange"
@@ -43,38 +49,9 @@
             :total="pagination.total">
           </el-pagination>
         </div>
-      </div>
-      <!-- 新增标签弹层 -->
-      <div class="add-form">
-       <el-dialog title="新增器材" :visible.sync="dialogFormVisible" width="45%">
-           <el-form ref="formData" :model="formData"  label-position="right" label-width="100px">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="器材类型" prop="kind">
-                    <el-select v-model="formData.kind" placeholder="请选择器材类型" @change="getPrice()">
-                      <el-option v-for="(item,index) in kindList" :key="index" :label="item.kind" :value="item.kind">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="器材价格" prop="price">
-                    <el-select v-model="formData.price" placeholder="请选择价格">
-                      <el-option v-for="(item,index) in priceList" :key="index" :label="item.price" :value="item.price">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-           </el-form>
-           <div slot="footer" class="dialog-footer">
-             <el-button @click="cancel()">取消</el-button>
-             <el-button type="primary" @click="handleAdd()">确定</el-button>
-           </div>
-       </el-dialog>
-      </div>
-      <!-- 搜索标签弹层 -->
-      <div class="add-form">
+    </div>
+    <!-- 搜索标签弹层 -->
+    <div class="add-form">
        <el-dialog title="搜索器材" :visible.sync="dialogFormVisibleSel" width="45%">
            <el-form ref="pagination" :model="pagination"  label-position="right" label-width="100px">
               <el-row>
@@ -106,8 +83,8 @@
              <el-button type="primary" @click="getAll()">确定</el-button>
            </div>
        </el-dialog>
-      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -123,22 +100,19 @@ export default {
           kind:'',
           safe:''
       },
-      formData:{
-        kind:'',
-        price:''
-      },//添加用的表单
       kindList:[],//用户存放种类
-      priceList:[],//用于存放价格
-      dialogFormVisible: false,//添加表单是否可见
-      dialogFormVisibleSel:false,//查询表单是否可见
-      dialogFormVisible4Edit:false,//详情表单是否可见
       selectList:[{
         select:"------"
       },{
         select:"是"
       },{
         select:"否"
-      },]
+      },],
+      formData:{
+        kind:'',
+        price:''
+      },//添加用的表单
+      dialogFormVisibleSel:false,//查询表单是否可见
     }
   },
   created() {
@@ -148,7 +122,7 @@ export default {
     goBack () {
       this.$router.push('/home')
     },
-    //获取表格数据
+    //获取页面数据
     getAll(){
       if(this.pagination.kind==="------") this.pagination =''
       if(this.pagination.safe==="------") this.pagination =''
@@ -160,7 +134,7 @@ export default {
       param +="&safe="+this.pagination.safe;
 
       request({
-        url:"/tools/getAll/"+token+"/"+this.pagination.currentPage+"/"+this.pagination.pageSize+param,
+        url:"/tools/getExistAll/"+token+"/"+this.pagination.currentPage+"/"+this.pagination.pageSize+param,
         method:"get"
       }).then(res=>{
         // console.log(res);
@@ -192,41 +166,9 @@ export default {
       //执行查询
       this.getAll();
     },
-    //添加器材
-    handleAdd(){
-      if(this.formData.kind===''|| this.formData.price === ''){
-        this.$message.error("请正确添加器材")
-      }
-      else{
-        request({
-        url:"/tools",
-        method:"post",
-        data:this.formData
-      }).then(res=>{
-        let code = res.data.code
-        if(code === 200){
-          this.dialogFormVisible = false;
-          this.$message.success("器材添加成功")
-        }
-        else{
-          this.$message.error("系统故障，请稍后再试")
-        }
-      }).finally(()=>{
-        this.getAll()
-        this.resetForm()
-      })
-      }
-    },
-    //取消
-    cancel(){
-      this.dialogFormVisible = false;
-      this.dialogFormVisibleSel =false;
-      this.dialogFormVisible4Edit = false;
-      this.$message.info("当前操作取消")
-    },
-    //弹出添加窗口
-    handleCreate() {
-      this.dialogFormVisible = true;
+    //弹出搜索框
+    handleSearch(){
+      this.dialogFormVisibleSel = true;
       this.resetForm();
       this.getKind();
     },
@@ -246,27 +188,80 @@ export default {
         this.kindList = res.data.data
       })
     },
-    //获取选中器材类型对应的价格
-    getPrice(){
-      request({
-        url:"/tools/getprice?kind="+this.formData.kind,
-        method:"get"
-      }).then(res=>{
-        let code = res.data.code
-        if(code === 200){
-          this.priceList = res.data.data
-        }
-        else{
-          this.$message.error('系统出错,请稍后再试')
-        }
+    //对器材进行维护
+    handlefix(index,row){
+      this.$confirm("你确定要把该器材进行维护吗，是否继续？","提示",{type:"info"}).then(()=>{
+        request({
+          url:'tools/fix/'+row.id,
+          method:'get',
+        }).then(res=>{
+          // console.log(res);
+          let code =  res.data.code
+          if(code === 200){
+            this.$message.success('器材下架成功')
+          }
+          else{
+            this.$message.error('系统出错,请稍后再试')
+          }
+        }).finally(res=>{
+          this.getAll()
+        })
       })
     },
-    //弹出搜索框
-    handleSearch(){
-      this.dialogFormVisibleSel = true;
-      this.resetForm();
-      this.getKind();
+    //器材上架
+    handleup(index,row){
+      this.$confirm("你确定要把该器材进行维护吗，是否继续？","提示",{type:"info"}).then(()=>{
+        request({
+          url:'tools/up/'+row.id,
+          method:'get',
+        }).then(res=>{
+          // console.log(res);
+          let code =  res.data.code
+          if(code === 200){
+            this.$message.success('器材上架成功')
+          }
+          else{
+            this.$message.error('系统出错,请稍后再试')
+          }
+        }).finally(res=>{
+          this.getAll()
+        })
+      })
     },
+    //对器材进行删除
+    handledelete(index,row){
+      if(row.safe === '否'){
+        this.$confirm("此器材不处于维护状态，你确定要把该器材删除吗，是否继续？","提示",{type:"danger"}).then(()=>{
+          this.deleteTools(row);
+        }).catch(()=>{
+          this.$message.info("取消操作");
+        });
+      }
+      else{
+        this.$confirm("你确定要把该器材删除吗，是否继续？","提示",{type:"danger"}).then(()=>{
+          this.deleteTools(row);
+        }).catch(()=>{
+          this.$message.info("取消操作");
+        });
+      }
+    },
+    //删除器材
+    deleteTools(row){
+      request({
+        url:'tools/'+row.id,
+        method:'delete'
+      }).then(res=>{
+        let code =  res.data.code
+          if(code === 200){
+            this.$message.success('器材删除成功')
+          }
+          else{
+            this.$message.error('系统出错,请稍后再试')
+          }
+      }).finally(res=>{
+          this.getAll()
+        })
+    }
   }
 }
 </script>
@@ -278,7 +273,6 @@ export default {
     position: relative;
     margin: 0 auto;
     width: 98%;
-    // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     overflow: hidden;
     height: 800px;
@@ -301,27 +295,5 @@ export default {
       margin: 0 auto;
     }
   }
-}
-</style>
-<style>
-.add-form .el-dialog{
-  height: 320px;
-}
-.add-form .el-dialog__body{
-  height: 130px;
-}
-.ps{
-  padding-left: 5%;
-  color: #F56c6c;
-  font-size: 10px;
-  font-weight: 700;
-}
-.show-form .sp{
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 600;
-  height: 20px;
-  line-height: 20px;
-  padding: 5px;
 }
 </style>

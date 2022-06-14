@@ -26,6 +26,7 @@ public class controllerTestCase {
     @Autowired
     private TStateMapper tStateMapper;
 
+
     @Test
     void testGetPrice(){
         String kind = "篮球";
@@ -92,4 +93,5 @@ public class controllerTestCase {
         System.out.println(Float.valueOf(split[0]).toString()+"0");
 
     }
+
 }

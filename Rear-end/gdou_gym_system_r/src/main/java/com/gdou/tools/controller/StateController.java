@@ -3,6 +3,7 @@ package com.gdou.tools.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gdou.api.CommonResult;
+import com.gdou.price.service.Impl.Price_OverTimeImpl;
 import com.gdou.tools.domain.TState;
 import com.gdou.tools.domain.Tools;
 import com.gdou.tools.domain.UserToolsVO;
@@ -27,6 +28,9 @@ public class StateController {
 
     @Autowired
     private IToolsService iToolsService;
+
+    @Autowired
+    private Price_OverTimeImpl price_overTime;
 
     /**
      * 用户预约器材
@@ -53,6 +57,11 @@ public class StateController {
         }
     }
 
+    /**
+     * 获取可选择的时间
+     * @param date
+     * @return
+     */
     @GetMapping("time/{date}")
     public CommonResult getTime(@PathVariable String date){
         List<String> list = TimeUtil.chooseTime(date);
@@ -81,6 +90,13 @@ public class StateController {
         }
     }
 
+    /**
+     * 获取用户姓名 及对应的器材
+     * @param token
+     * @param id
+     * @param usercode
+     * @return
+     */
     @GetMapping("detail/{token}/{id}/{usercode}")
     public JSONObject getDetail(@PathVariable String token,@PathVariable Integer id,@PathVariable String usercode){
         JSONObject result = new JSONObject();
@@ -113,6 +129,15 @@ public class StateController {
             if(itStateService.updateState(id)) return CommonResult.success();
             return CommonResult.failed();
         }
+    }
+
+    /**
+     * 获得租用收费标准
+     * @return
+     */
+    @GetMapping("getFine")
+    public CommonResult getFine(){
+        return CommonResult.success(price_overTime.getFine());
     }
 
 }

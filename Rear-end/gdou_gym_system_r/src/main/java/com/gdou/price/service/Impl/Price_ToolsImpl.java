@@ -47,6 +47,14 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
     @Autowired
     private IPrice_OverTimeService iPrice_overTimeService;
 
+
+    /**
+     * 获取订单信息
+     * @param currentPage
+     * @param pageSize
+     * @param priceTools
+     * @return
+     */
     @Override
     public IPage<Price_Tools> getPage(int currentPage, int pageSize,Price_Tools priceTools) {
         //进行条件查询
@@ -398,25 +406,33 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
             long nowTime = now.getTime()-rt.getTime();//获取现在时间与租借时间的时间戳
             long minute = nowTime/1000/60;//把时间戳转换为分钟
 //            System.out.println(minute);
-            list.add(String.valueOf(minute));
-            if(minute == 0){
+            if(minute <= 0){
                 //没有超过预约归还时间
                 finalPrice = price.toString();
+                list.add("0");
             }
             else if(minute>0 && minute<=720){
                 Price_OverTime overtime = iPrice_overTimeService.getById(1);
                 System.out.println(overtime.getMultiple());
                 Float allPrice= price + price*(minute/60)*overtime.getMultiple();
                 finalPrice = allPrice.toString();
+                list.add(String.valueOf(minute));
             }
             else{
                 Price_OverTime overtime = iPrice_overTimeService.getById(2);
                 Float allPrice = price*13+price*((minute-720)/60)*overtime.getMultiple();
                 finalPrice = allPrice.toString();
+                list.add(String.valueOf(minute));
             }
             list.add(finalPrice);
-            list.add(formatter.format(now.getTime()));
+            String format = formatter.format(now.getTime());
+            list.add(format);
 
+            for(int i =0;i<arrList.size();i++){
+                UpdateWrapper<TState> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("id",arrList.get(i)).set("ractually",format);
+                tStateMapper.update(null,updateWrapper);
+            }
             if(minute>360){
                 //归还时间大于6小时记录失约
                 list.add("01");
@@ -466,5 +482,28 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
             res = toolsMapper.update(null,updateWrapper1);
         }
         return res>0;
+    }
+
+
+    /**
+     * 获取用户所选的器材信息
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Integer> getPriceTools(Integer id) {
+        Price_Tools price_tools = price_toolsMapper.selectById(id);
+        String[] str = price_tools.getToolslist().split(",");
+        List<String> stringList= Arrays.asList(str);
+        List<String> arrList = new ArrayList<String>(stringList);//应用于存放预留器材订单编号
+//        System.out.println(arrList);
+
+        //遍历tools_state表获取器材号
+        List<Integer> tList = new ArrayList<>();//用于存放器材号
+        for (int i =0;i<arrList.size();i++){
+            TState tState = tStateMapper.selectById(arrList.get(i));
+            tList.add(tState.getToolscode());
+        }
+        return tList;
     }
 }

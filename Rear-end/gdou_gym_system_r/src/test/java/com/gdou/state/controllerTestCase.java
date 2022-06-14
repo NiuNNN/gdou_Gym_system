@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gdou.price.dao.Price_ToolsMapper;
 import com.gdou.price.domain.Price_Tools;
+import com.gdou.price.service.Impl.Price_OverTimeImpl;
 import com.gdou.tools.dao.TStateMapper;
 import com.gdou.tools.dao.ToolsMapper;
 import com.gdou.tools.domain.TState;
@@ -28,6 +29,9 @@ public class controllerTestCase {
 
     @Autowired
     private Price_ToolsMapper price_toolsMapper;
+
+    @Autowired
+    private Price_OverTimeImpl price_overTime;
 
     @Autowired
     private ToolsMapper toolsMapper;
@@ -165,5 +169,10 @@ public class controllerTestCase {
     @Test
     void testEndTime(){
         System.out.println(TimeUtil.endTime(1));
+    }
+
+    @Test
+    void testFine(){
+        System.out.println(price_overTime.getFine());
     }
 }
