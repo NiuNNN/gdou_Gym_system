@@ -570,7 +570,7 @@ export default {
           this.detail.overtime = res.data.overtime
           this.overtime = res.data.overtime
           // console.log(this.detail.overtime);
-          if(this.detail.overtime = ''){
+          if(this.detail.overtime = '0'){
             this.over = false
           }
           else{
@@ -625,10 +625,10 @@ export default {
     //对超时进行登记
     register(){
       request({
-        url:'',
+        url:'price/register/'+this.detail.ordercode,
         method:'get'
       }).then(res=>{
-        console.log(res);
+        // console.log(res);
         this.$message.success('已对用户超时未领取进行登记')
       }).finally(()=>{
         this.dialogVisibleOverTime = false
@@ -639,11 +639,11 @@ export default {
     Pay(){
        this.$confirm("是否已经收款，确定？","提示",{type:"info"}).then(()=>{
         request({
-          url:'',
+          url:'price/cancelRegister/'+this.detail.ordercode,
           method:'get'
         }).then(res=>{
-          console.log(res);
-          this.$message.success('已对用户超时未领取进行登记')
+          // console.log(res);
+          this.$message.success('缴费成功')
         }).finally(()=>{
           this.dialogVisibleOverTime = false
           this.getAll();

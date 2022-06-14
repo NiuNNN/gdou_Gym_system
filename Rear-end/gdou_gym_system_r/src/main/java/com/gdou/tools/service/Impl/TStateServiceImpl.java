@@ -181,8 +181,7 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         String date = tState.getDate();
         String time = TimeUtil.endTime(tState.getTime());
         list.add(date+" "+time);
-        String[] actually = tState.getActually().split(",");
-        list.add(actually[0]+" "+actually[1]);
+        list.add(tState.getActually());
         return list;
     }
 

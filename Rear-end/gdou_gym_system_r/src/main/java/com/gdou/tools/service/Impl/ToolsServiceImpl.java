@@ -52,8 +52,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
      * @return IPage
      */
     @Override
-    public IPage<Tools> getExistPage(int currentPage, int pageSize, Tools tools)
-    {
+    public IPage<Tools> getExistPage(int currentPage, int pageSize, Tools tools) {
         tools.setExist("是");
         LambdaQueryWrapper<Tools> lambdaQueryWrapper = new LambdaQueryWrapper<Tools>();
         lambdaQueryWrapper.like(Strings.isNotEmpty(tools.getKind()),Tools::getKind,tools.getKind());
@@ -64,6 +63,7 @@ public class ToolsServiceImpl extends ServiceImpl<ToolsMapper, Tools> implements
         toolsMapper.selectPage(page,lambdaQueryWrapper);
         return page;
     }
+
     /**
      * 根据器材种类获取相对应的金额
      * @param kind 器材种类

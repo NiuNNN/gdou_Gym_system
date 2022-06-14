@@ -3,9 +3,8 @@ package com.gdou.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gdou.api.CommonResult;
-import com.gdou.user.domain.User;
+import com.gdou.user.domain.SuperUser;
 import com.gdou.user.service.ISuperUserService;
-import com.gdou.user.service.IUserService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,38 +13,32 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 @RestController
-@RequestMapping(value = "/users",produces="application/json")
-public class InfoController {
-    @Autowired
-    private IUserService userService;
-
+@RequestMapping(value = "/superusers",produces="application/json")
+public class SuperInfoController {
     @Autowired
     private ISuperUserService superUserService;
 
     /**
-     * 返回用户信息
+     * 返回管理员信息
      * @param code
      * @return
      */
-    @GetMapping("/toGetUserInfo/{code}")
+    @GetMapping("/toGetSuperUserInfo/{code}")
     public CommonResult getUserInfo(@PathVariable String code){
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("code",code);
-        User user = userService.getOne(queryWrapper);
-        if(user.equals("")) return CommonResult.failed();
-        return CommonResult.success(user);
+        SuperUser superUser = superUserService.getOne(queryWrapper);
+        if(superUser.equals("")) return CommonResult.failed();
+        return CommonResult.success(superUser);
     }
-
-
-
     /**
      * 上传照片
-     * @param user
+     * @param superUser
      * @param file
      * @return
      */
     @PostMapping("/toUploadUserAvatar")
-    public CommonResult updateAvatar(User user, MultipartFile file){
+    public CommonResult updateAvatar(SuperUser superUser, MultipartFile file){
         //判断文件类型
         String pType = file.getContentType();
         pType = pType.substring(pType.indexOf("/")+1);
@@ -55,12 +48,12 @@ public class InfoController {
         }
         long time=System.currentTimeMillis();
 
-        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\avatar\\"+user.getCode()+"."+pType;
+        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\avatar\\"+superUser.getCode()+"."+pType;
 
 //        System.out.println(path);
 
         try{
-            userService.addVatar("http://localhost:80/avatar/"+user.getCode()+"."+pType,user);
+            superUserService.addVatar("http://localhost:80/avatar/"+superUser.getCode()+"."+pType,superUser);
             file.transferTo(new File(path));
             //文件路径保存到数据库中从而读取
             System.out.println(path);
@@ -70,40 +63,36 @@ public class InfoController {
             return CommonResult.failed();
         }
     }
-
     /**
      * 修改资料
-     * @param user
+     * @param superUser
      * @return
      */
     @PutMapping("/toUploadUser")
-    public CommonResult updateUser(@RequestBody User user){
+    public CommonResult updateUser(@RequestBody SuperUser superUser){
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("code",user.getCode());
-        User user1 = userService.getOne(queryWrapper);
+        queryWrapper.eq("code",superUser.getCode());
+        SuperUser superUser1 = superUserService.getOne(queryWrapper);
         //1.判断是否修改了邮箱和手机号
         //2.判断是否存在相同的邮箱和手机号
-        if(!user1.getPhone().equals(user.getPhone())) {
-            if (userService.checkPhone(user.getPhone())) {
+        if(!superUser1.getPhone().equals(superUser.getPhone())) {
+            if (superUserService.checkPhone(superUser.getPhone())) {
                 return CommonResult.failed("存在该手机号", "phone");
             }
         }
-        if(!user1.getEmail().equals(user.getEmail())) {
-            if (userService.checkEmail(user.getEmail())) {
+        if(!superUser1.getEmail().equals(superUser.getEmail())) {
+            if (superUserService.checkEmail(superUser.getEmail())) {
                 return CommonResult.failed("存在该邮箱", "email");
             }
         }
-        boolean flag = userService.updateUser(user);
+        boolean flag = superUserService.updateSuperUser(superUser);
         if(flag) return CommonResult.success();
         return CommonResult.failed();
     }
 
     /**
      * 修改密码
-     * @param code
-     * @param password
-     * @param pass
-     * @param token
+     * @param
      * @return
      */
     @PutMapping("/toUploadPwd/{token}/{code}/{password}/{pass}")
@@ -113,29 +102,46 @@ public class InfoController {
         else{
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.eq("code",code);
-            User user = userService.getOne(queryWrapper);
-            if(!user.getPassword().equals(password)) return CommonResult.validateFailed();
-            UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+            SuperUser superUser = superUserService.getOne(queryWrapper);
+            String code1 = superUserService.checkUser(superUser);
+            if(!superUser.getPassword().equals(password)) return CommonResult.validateFailed();
+            UpdateWrapper<SuperUser> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("code",code)
                     .set("password",pass);
-            boolean update = userService.update(updateWrapper);
+            boolean update = superUserService.update(updateWrapper);
             if(update) return CommonResult.success();
             else return CommonResult.failed();
         }
     }
 
     /**
-     * 管理员修改用户密码，用户账号是否存在
-     * @param
-     * @return
+     * 新建用户
+     * @param superUser
+     * @return CommonResult
      */
-    @PostMapping("/getuserid")
-    public CommonResult getUserId(@RequestBody User user){
-        System.out.println(user);
-        String code = userService.checkUser(user);
-        if(code.equals("01")) return CommonResult.success();
+    @PostMapping("/save")
+    public CommonResult savesuperUser(@RequestBody SuperUser superUser){
+        String code = superUserService.checkUser(superUser);
+        if(code.equals("01")) return CommonResult.failed("存在该账号","code");
+        else if(code.equals("02")) return CommonResult.failed("存在该手机号","phone");
+        else if(code.equals("03")) return CommonResult.failed("存在该邮箱","email");
         else{
-            return CommonResult.failed("该账号不存在","code");
+            superUserService.save(superUser);
+            return CommonResult.success();
         }
     }
+
+    /**
+     * 获得管理员密码来验证
+     * @param usercode
+     * @return
+     */
+    @GetMapping("/getuserpwd/{usercode}")
+    public  CommonResult getUserpwd(@PathVariable String usercode) {
+        QueryWrapper<SuperUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code",usercode);
+        SuperUser superUser = superUserService.getOne(queryWrapper);
+        return CommonResult.success(superUser);
+    }
+
 }

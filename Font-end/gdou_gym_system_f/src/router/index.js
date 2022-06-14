@@ -17,6 +17,13 @@ import Main from '@/views/Main.vue';
 import UserInfo from '@/views/Gym-User/user-info.vue'; //修改用户信息
 import UserPwd from '@/views/Gym-User/user-pwd.vue';//修改用户密码
 
+//Superuser
+import User_create from '@/views/Gym-Superuser/user-create.vue';
+import User_update from '@/views/Gym-Superuser/user-update.vue';
+import Super_create from '@/views/Gym-Superuser/superuser-create.vue'
+import SuperuserInfo from '@/views/Gym-Superuser/superuser-info.vue'; //修改管理员信息
+import SuperuserPwd from '@/views/Gym-Superuser/superuser-pwd.vue';//修改管理员密码
+
 // Tools
 import ToolsInfo from '@/views/Gym-Tools/tools-info.vue';//展示用户信息进行增删
 import ToolsBor from '@/views/Gym-Tools/tools-borrow.vue';//器材租用修改
@@ -53,7 +60,12 @@ const routes = [
       {path:'tools_info',component:ToolsInfo},
       {path:'tools_borrow',component:ToolsBor},
       {path:'tools_rent',component:ToolsRent},
-      {path:'tools_fix',component:ToolsFix}
+      {path:'tools_fix',component:ToolsFix},
+      {path:'user_create', component:User_create},
+      {path:'user_update', component:User_update},
+      {path:'superuser_info',component:SuperuserInfo},
+      {path:'superuser_pwd',component:SuperuserPwd},
+      {path:'superuser_create',component:Super_create},
     ]
   },
 ]

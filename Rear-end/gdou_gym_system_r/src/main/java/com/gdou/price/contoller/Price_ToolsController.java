@@ -220,8 +220,16 @@ public class Price_ToolsController {
      */
     @GetMapping("register/{id}")
     public CommonResult register(@PathVariable Integer id){
-        iUnreceive_tools.register(id);
-        return CommonResult.success();
+        boolean flag = iUnreceive_tools.register(id);
+        if(flag) return CommonResult.success();
+        else return CommonResult.failed();
+    }
+
+    @GetMapping("cancelRegister/{id}")
+    public CommonResult cancelRegister(@PathVariable Integer id){
+        boolean flag = iUnreceive_tools.cancelRegister(id);
+        if(flag) return CommonResult.success();
+        else return CommonResult.failed();
     }
 
 }

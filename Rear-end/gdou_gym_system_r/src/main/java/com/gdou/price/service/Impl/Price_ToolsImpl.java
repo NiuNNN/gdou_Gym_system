@@ -106,8 +106,8 @@ public class Price_ToolsImpl extends ServiceImpl<Price_ToolsMapper, Price_Tools>
             // 对tools表进行更新
             //获取当前时间
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat formatterd = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
-            String now = formatterd.format(calendar.getTime());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String now = formatter.format(calendar.getTime());
 
             for (int i = 0;i<tList.size();i++){
                 UpdateWrapper<Tools> updateWrapper = new UpdateWrapper<>();
