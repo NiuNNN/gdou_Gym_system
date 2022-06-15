@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/kinds",produces="application/json")
-public class KindController {
+public class ToolsKindController {
     @Autowired
     private IKindService iKindService;
 

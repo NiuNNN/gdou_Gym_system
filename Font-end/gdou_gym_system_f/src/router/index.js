@@ -30,6 +30,13 @@ import ToolsBor from '@/views/Gym-Tools/tools-borrow.vue';//器材租用修改
 import ToolsRent from '@/views/Gym-Tools/tools-rent.vue';// 管理员器材租借
 import ToolsFix from '@/views/Gym-Tools/tools_fix.vue'; //器材报修
 
+//State
+import State from '@/views/Gym-State/state';
+import StateNotice from '@/views/Gym-State/gonggao';
+import StateBook from '@/views/Gym-State/yuyue'
+import StateUserNotice from '@/views/Gym-State/gonggao/usergonggao'
+import StateFaild from '@/views/Gym-State/yuyue/shiyue'
+
 // 导入不拦截地址
 import pathArr from '@/router/pathArr.js';
 
@@ -66,6 +73,11 @@ const routes = [
       {path:'superuser_info',component:SuperuserInfo},
       {path:'superuser_pwd',component:SuperuserPwd},
       {path:'superuser_create',component:Super_create},
+      {path:'state',component:State},
+      {path:'gonggao',component:StateNotice},
+      {path:'yuyue',component:StateBook},
+      {path:'usergonggao',component:StateUserNotice},
+      {path:'usershiyue',component:StateFaild}
     ]
   },
 ]

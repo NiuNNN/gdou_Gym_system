@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value="/borrows",produces="application/json")
-public class StateController {
+public class ToolsStateController {
     @Autowired
     private IUserService iUserService;
 

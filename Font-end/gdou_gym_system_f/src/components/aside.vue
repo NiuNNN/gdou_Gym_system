@@ -42,8 +42,9 @@
           </el-submenu>
           <el-submenu index="5-3">
             <template slot="title">场地管理</template>
-            <el-menu-item index="5-3-1">场地公告发布</el-menu-item>
-            <el-menu-item index="5-3-2">场地预约处理</el-menu-item>
+            <el-menu-item index="/home/state">场地增删改查</el-menu-item>
+            <el-menu-item index="/home/gonggao">场地公告发布</el-menu-item>
+            <el-menu-item index="/home/usershiyue">场地失约处理</el-menu-item>
           </el-submenu>
           <el-submenu index="5-4">
             <template slot="title">器材管理</template>
@@ -58,10 +59,8 @@
           <span slot="title" class="black" index="">场地使用</span>
         </el-menu-item>
         <el-menu-item-group>
-          <el-menu-item index="2-1">场地预约</el-menu-item>
-          <el-menu-item index="2-2">场地预约修改</el-menu-item>
-          <el-menu-item index="2-3">场地预约退订</el-menu-item>
-          <el-menu-item index="2-4">场地公告</el-menu-item>
+          <el-menu-item index="/home/yuyue">场地预约</el-menu-item>
+          <el-menu-item index="/home/usergonggao">场地公告</el-menu-item>
         </el-menu-item-group>
         <!-- 赛事部分 -->
         <el-menu-item>
@@ -100,7 +99,10 @@ export default {
       let userclass = localStorage.getItem('userclass')
       if(userclass === 'user') this.flag = true
       else this.flag = false
-    }
+    },
+    handleClose(done) {
+      done();
+    },
   },
   created(){
     this.changeFlag()

@@ -69,13 +69,11 @@
         </el-form>
       </div>
     </div>
-    <div class="comfirm">
+    <div class="edit-comfirm">
       <el-dialog
         title="填写你的密码，验证用户"
         :visible.sync="checkvisible"
-        width="30%"
-      >
-        <div class="confirm">
+        width="30%">
           <el-form>
             <el-form-item label="用户密码" :label-width="formLabelWidth">
               <el-input
@@ -91,7 +89,6 @@
               >确定</el-button
             >
           </div>
-        </div>
       </el-dialog>
     </div>
   </div>
@@ -347,8 +344,11 @@ export default {
     }
   }
 }
-.confirm {
-  height: 200px;
-  overflow: auto;
+</style>
+<style lang="less">
+.edit-confirm{
+.el-dialog__body {
+  height: 130px;
+  }
 }
 </style>

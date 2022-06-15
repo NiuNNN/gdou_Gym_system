@@ -428,7 +428,8 @@ export default {
 }
 </style>
 <style lang="less">
-.el-dialog__body {
+.edit-form{
+  .el-dialog__body {
   height: 400px;
   .form {
     float: left;
@@ -475,4 +476,6 @@ export default {
     margin-bottom: 20px;
   }
 }
+}
+
 </style>
