@@ -72,18 +72,21 @@ export default {
 <style lang="less" scoped>
 .login-container{
   height: 100%;
+  background:url('@/assets/img/bgc.jpg') no-repeat;
+  background-size: 1519px auto;
   .login-box{
     position: absolute;
-    width: 450px;
-    height: 400px;
-    background-color: #fff;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    width: 430px;
+    height: 450px;
+    /* background-color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
+    border-radius: 6px;
+    background-color: rgba(0,0,0,0.66);
     border-radius: 4px;
     left: 65%;
-    top: 30%;
+    top: 20%;
     .login-header{
       width: 100%;
-      background-color: #409eff;
       span{
         display: block;
         width: 100%;
@@ -108,7 +111,7 @@ export default {
         line-height: 30px;
         text-align: left;
         font-weight: 600;
-        color: #303133;
+        color: #fff;
       }
       .el-input{
         width: 230px;
@@ -116,23 +119,24 @@ export default {
       }
     }
     .form-login{
-      width: 150px;
-      height: 40px;
-      background-color: antiquewhite;
-      margin: 60px auto 0;
+      width: 280px;
+      height: 47px;
+      background-color: #fff;
+      border-radius: 15px;
+      margin: 20px auto 0;
       /deep/ button{
-        width: 150px;
+        width: 280px;
       }
     }
     .form-choose{
 
-      margin-top: 15px;
+      margin-top: 70px;
       a{
-        color: #225592;
+        color: #fff;
         font-size: 12px;
       }
       a:hover{
-        border-bottom: 1px solid #225592;
+        border-bottom: 1px solid #fff;
         cursor: pointer;
       }
       .forget,.create{
@@ -140,9 +144,6 @@ export default {
         float: left;
         margin-left: 15px;
         font-size: 14px;
-      }
-      .el-button{
-        font-size: 19px;
       }
       .superuser{
         margin-top: 30px;
@@ -152,6 +153,33 @@ export default {
         font-size: 14px;
       }
     }
+  }
+  /deep/.el-button--primary{
+    background-color: #fff;
+    border-radius: 15px;
+    border: #fff;
+    height: 47px;
+    span{
+      color: #000;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+  /deep/.el-input input {
+    background: none;
+    text-indent:1px;
+    -webkit-appearance: none;
+    border-radius: 14px;
+    border: 1px solid white;
+    box-sizing: border-box;
+    color: white;
+    display: block;
+    font-size: inherit;
+    height: 42px;
+    line-height: 1;
+    outline: 0;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    width: 100%;
   }
 }
 </style>

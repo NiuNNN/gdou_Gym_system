@@ -1,5 +1,5 @@
 <template>
-  <Login 
+<Login 
     title="用户登录" 
     login_name="管理员登录" 
     :show="true"
