@@ -2,9 +2,9 @@ package com.gdou.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gdou.api.CommonResult;
 import com.gdou.user.domain.User;
-import com.gdou.user.service.ISuperUserService;
 import com.gdou.user.service.IUserService;
 import com.gdou.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,6 @@ public class InfoController {
     @Autowired
     private IUserService userService;
 
-    @Autowired
-    private ISuperUserService superUserService;
 
     /**
      * 返回用户信息
@@ -35,7 +33,6 @@ public class InfoController {
         if(user.equals("")) return CommonResult.failed();
         return CommonResult.success(user);
     }
-
 
 
     /**
@@ -137,5 +134,33 @@ public class InfoController {
         else{
             return CommonResult.failed("该账号不存在","code");
         }
+    }
+
+    /**
+     * 获取全部用户信息
+     * @param currentPage 当前页码
+     * @param pageSize 页面大小
+     * @param user
+     * @return
+     */
+    @GetMapping("getAll/{currentPage}/{pageSize}")
+    public CommonResult getAll(@PathVariable int currentPage, @PathVariable int pageSize,User user){
+        IPage<User> page = userService.getPage(currentPage,pageSize,user);
+        //如果当前页码大于了总页码值，那么重新执行查询操作，使用最大页码值作为当前页码值
+        if(currentPage>page.getPages()){
+            page = userService.getPage((int)page.getPages(),pageSize,user);
+        }
+        return CommonResult.success(page);
+    }
+
+    /**
+     * 判断用户是否有预约 未付款的记录 没有进行删除
+     * @param usercode
+     * @return
+     */
+    @DeleteMapping("{usercode}")
+    public CommonResult deleteuser(@PathVariable String usercode){
+        Boolean flag = userService.deleteUser(usercode);
+        return flag ? CommonResult.success() :CommonResult.failed();
     }
 }

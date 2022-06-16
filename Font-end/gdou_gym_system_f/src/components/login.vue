@@ -1,5 +1,26 @@
 <template>
   <div class="login-container">
+    <div class="notice-box">
+      <div class="notice-header">
+        <span>广东海洋大学体院管理系统</span>
+      </div>
+      <div class="notice-break-line">
+      </div>
+      <div class="notice-content">
+        <p>
+          &nbsp; &nbsp;广东海洋大学体育馆始建于2005年，于2005年5月施工到2010年10份正式竣工，于2010年11月17日正式投入使用。该馆共投入4000余万元。
+          主校区体育馆位于校园中心区域，依山傍海，气势恢宏，与周围错落有致的楼群及雕塑相映成趣，构成一幅中西风格相统一、自然与人文相协调的和谐风景。
+        </p>
+        <p>
+          &nbsp; &nbsp;体育馆占地面积1万4平方米，建筑面积高达13500平方米，共有四层。首层作为主场馆，共设有2397个座位，主场馆内最多可以容纳5717人。
+          主场馆内除了设有体育学院办公室、运动器材室、运动员休息室和会议室以外，还有一个标准篮球场，其面积等同于12个羽毛球场和两个排球场。除了日常可供师生进行体育锻炼外，
+          也可举行军训动员大会、大型文艺演出等大型活动。值得注意的是，第二层除了设有台球、健身房外，还设有保龄球馆。第三、四层则分别设有乒乓球室和武术馆、体操馆。
+        </p>
+        <p>
+          &nbsp; &nbsp;本系统包括体育赛事管理，体育器材管理，体育场地管理等。以web应用形式提供服务，可以通过互联网进行访问。
+        </p>
+      </div>
+    </div>
     <div class="login-box">
       <div class="login-header">
         <span>{{ title }}</span>
@@ -73,10 +94,48 @@ export default {
 .login-container{
   height: 100%;
   background:url('@/assets/img/bgc.jpg') no-repeat;
-  background-size: 1519px auto;
+  background-size: 1600px auto;
+  .notice-box{
+    position: absolute;
+    width: 630px;
+    height: 435px;
+    border-radius: 6px;
+    background-color: rgba(0,0,0,0.66);
+    border-radius: 4px;
+    top: 20%;
+    left: 18%;
+    padding-top: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    .notice-header{
+      width: 100%;
+      span{
+        display: block;
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        font-size: 30px;
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+    .notice-break-line{
+      background-color: white;
+      width: 100%;
+      margin-top: 14px;
+      margin-bottom: 20px;
+      height: 2px;
+    }
+    .notice-content{
+      p{
+        color: #fff;
+      }
+    }
+  }
   .login-box{
     position: absolute;
-    width: 430px;
+    width: 350px;
     height: 450px;
     /* background-color: #fff;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
@@ -86,6 +145,7 @@ export default {
     left: 65%;
     top: 20%;
     .login-header{
+      padding-top: 15px;
       width: 100%;
       span{
         display: block;

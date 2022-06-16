@@ -17,4 +17,5 @@ boolean deleteById(Long Id,String time,String name);
     List<String> selectByName(String name);
 
     List<BigDecimal> selectByNametop(String name);
+
 }

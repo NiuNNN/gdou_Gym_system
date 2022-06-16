@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/state")
@@ -66,12 +64,31 @@ public class StateController {
     //通过名字获取时间段
     @GetMapping("/selectByName")
     public CommonResult<List<String>> selectByName(String name) {
-        return CommonResult.success(stateService.selectByName(name));
+        Map<String, Object> columnMap = new HashMap<>();
+
+        //筛选selected未否的名称
+        columnMap.put("selected", "否");
+        columnMap.put("name", name);
+        List<String> stringArr = new ArrayList<>();
+        List<State> stateList = stateService.listByMap(columnMap);
+        stateList.forEach(state -> {
+            stringArr.add(state.getTime());
+        });
+        return CommonResult.success(stringArr);
     }
 
     //通过名字获取价格
     @GetMapping("/selectByNametop")
     public CommonResult<List<BigDecimal>> selectByNametop(String name) {
-        return CommonResult.success(stateService.selectByNametop(name));
+        Map<String, Object> columnMap = new HashMap<>();
+        //筛选selected未否的价格
+        columnMap.put("selected", "否");
+        columnMap.put("name", name);
+        List<BigDecimal> priceArr = new ArrayList<>();
+        List<State> stateList = stateService.listByMap(columnMap);
+        stateList.forEach(state -> {
+            priceArr.add(state.getPrice());
+        });
+        return CommonResult.success(priceArr);
     }
 }

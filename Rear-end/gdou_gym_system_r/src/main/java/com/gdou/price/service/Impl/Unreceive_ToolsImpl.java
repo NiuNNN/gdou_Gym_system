@@ -12,7 +12,9 @@ import com.gdou.tools.dao.TStateMapper;
 import com.gdou.tools.dao.ToolsMapper;
 import com.gdou.tools.domain.TState;
 import com.gdou.tools.domain.Tools;
+import com.gdou.tools.domain.UserToolsVO;
 import com.gdou.utils.PriceUtil;
+import com.gdou.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ public class Unreceive_ToolsImpl extends ServiceImpl<Unreceive_ToolsMapper, Unre
 
     @Autowired
     private ToolsMapper toolsMapper;
+
 
     /**
      * 对用户超时未领取器材进行登记
@@ -63,6 +66,7 @@ public class Unreceive_ToolsImpl extends ServiceImpl<Unreceive_ToolsMapper, Unre
 
         unreceive_tools.setUsercode(price_tools.getUsercode());
         unreceive_tools.setPrice(allPrice);
+        unreceive_tools.setPriceid(id);
 
         return unreceive_toolsMapper.insert(unreceive_tools)>0;
     }
@@ -102,5 +106,40 @@ public class Unreceive_ToolsImpl extends ServiceImpl<Unreceive_ToolsMapper, Unre
         unreceive_toolsMapper.deleteById(unreceive_tools.get(0).getId());
 
         return price_toolsMapper.update(null,updateWrapper) >0;
+    }
+
+    /**
+     * 获取用户待缴费记录
+     * @param usercode
+     * @return
+     */
+    @Override
+    public List<UserToolsVO> getUnreceive(String usercode) {
+        QueryWrapper<Unreceive_Tools> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("usercode",usercode);
+        List<Unreceive_Tools> unreceive_tools = unreceive_toolsMapper.selectList(queryWrapper);
+        UserToolsVO userToolsVO = new UserToolsVO();
+        List<UserToolsVO> list  = new ArrayList<>();
+//        System.out.println(unreceive_tools);
+//        System.out.println(unreceive_tools.get(0).getPriceid());
+        if(unreceive_tools.size()>0){
+            Price_Tools price_tools = price_toolsMapper.selectById(unreceive_tools.get(0).getPriceid());
+//            System.out.println(price_tools);
+            String[] str = price_tools.getToolslist().split(",");
+            List<String> stringList= Arrays.asList(str);
+            List<String> arrList = new ArrayList<String>(stringList);//应用于存放预留器材订单编号
+            TState tState = tStateMapper.selectById(arrList.get(0));
+//            System.out.println(tState);
+            Tools tools = toolsMapper.selectById(tState.getToolscode());
+
+            userToolsVO.setKind(tools.getKind());
+            userToolsVO.setPrice(tools.getPrice());
+            userToolsVO.setDate(price_tools.getDate());
+            List<String> time = TimeUtil.time();
+            userToolsVO.setDatetime(time.get(price_tools.getTime()));
+
+            list.add(userToolsVO);
+        }
+        return list;
     }
 }

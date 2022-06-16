@@ -1,5 +1,6 @@
 package com.gdou.user.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdou.user.domain.User;
 
@@ -19,4 +20,8 @@ public interface IUserService extends IService<User> {
     boolean checkEmail(String email);
 
     String getUserName(String usercode);
+
+    IPage<User> getPage(int currentPage, int pageSize, User user);
+
+    Boolean deleteUser(String usercode);
 }

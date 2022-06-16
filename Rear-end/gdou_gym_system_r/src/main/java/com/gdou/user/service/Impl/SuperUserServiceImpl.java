@@ -1,11 +1,19 @@
 package com.gdou.user.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gdou.price.dao.Price_ToolsMapper;
+import com.gdou.price.domain.Price_Tools;
+import com.gdou.state.dao.AppointmentMapper;
+import com.gdou.state.domain.StateAppointment;
 import com.gdou.user.dao.SuperUserMapper;
 import com.gdou.user.domain.SuperUser;
 import com.gdou.user.service.ISuperUserService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +21,12 @@ import org.springframework.stereotype.Service;
 public class SuperUserServiceImpl extends ServiceImpl<SuperUserMapper, SuperUser> implements ISuperUserService {
     @Autowired
     SuperUserMapper superUserMapper;
+
+    @Autowired
+    private Price_ToolsMapper price_toolsMapper;
+
+    @Autowired
+    private AppointmentMapper appointmentMapper;
 
     @Override
     public boolean updateSuperPwd(SuperUser superUser) {
@@ -65,6 +79,7 @@ public class SuperUserServiceImpl extends ServiceImpl<SuperUserMapper, SuperUser
         return flag>0;
 
     }
+
     /**
      * 检查手机号 邮箱 是否存在
      * @param superUser
@@ -116,5 +131,44 @@ public class SuperUserServiceImpl extends ServiceImpl<SuperUserMapper, SuperUser
         queryWrapper.eq("email",email);
         Long e = superUserMapper.selectCount(queryWrapper);
         return e>0;
+    }
+
+    /**
+     * 获取全部管理员信息
+     * @param currentPage
+     * @param pageSize
+     * @param superUser
+     * @return
+     */
+    @Override
+    public IPage<SuperUser> getPage(int currentPage, int pageSize, SuperUser superUser) {
+        LambdaQueryWrapper<SuperUser> lambdaQueryWrapper = new LambdaQueryWrapper<SuperUser>();
+        lambdaQueryWrapper.like(Strings.isNotEmpty(superUser.getCode()),SuperUser::getCode,superUser.getCode());
+        IPage page = new Page(currentPage,pageSize);
+        superUserMapper.selectPage(page,lambdaQueryWrapper);
+        return page;
+    }
+
+    /**
+     * 删除用户
+     * @param usercode
+     * @return
+     */
+    @Override
+    public Boolean deleteUser(String usercode) {
+        //查询器材、场地的订单表有无欠费、预约
+        QueryWrapper<Price_Tools> price_toolsQueryWrapper = new QueryWrapper<>();
+        price_toolsQueryWrapper.eq("usercode",usercode).eq("price","");
+
+        if(price_toolsMapper.selectCount(price_toolsQueryWrapper)>0) return false;
+
+        QueryWrapper<StateAppointment> stateAppointmentQueryWrapper = new QueryWrapper<>();
+        stateAppointmentQueryWrapper.eq("user_id",usercode).eq("usec","false");
+
+        if(appointmentMapper.selectCount(stateAppointmentQueryWrapper)>0) return false;
+
+        QueryWrapper<SuperUser> superUserQueryWrapper = new QueryWrapper<>();
+        superUserQueryWrapper.eq("code",usercode);
+        return superUserMapper.delete(superUserQueryWrapper)>0;
     }
 }

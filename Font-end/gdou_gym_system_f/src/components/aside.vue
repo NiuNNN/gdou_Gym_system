@@ -11,8 +11,7 @@
           </template>
           <el-menu-item-group>
             <template slot="title">个人信息</template>
-            <el-menu-item index="1-1"><i class="el-icon-document"></i>预约信息</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-document"></i>失约记录</el-menu-item>
+            <el-menu-item index="/home/user_break"><i class="el-icon-document"></i>失约记录 <span class="dot" v-if="dot>0">{{dot}}</span></el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
             <template slot="title">修改用户资料</template>
@@ -30,15 +29,14 @@
             <template slot="title">学生用户管理</template>
             <el-menu-item index="/home/user_create">学生用户注册</el-menu-item>
             <el-menu-item index="/home/user_update">学生密码修改</el-menu-item>
-            <el-menu-item index="5-1-3">删除学生用户</el-menu-item>
+            <el-menu-item index="/home/superuser_search">查询学生用户</el-menu-item>
           </el-submenu>
           <el-submenu index="5-2">
             <template slot="title">管理员用户管理</template>
             <el-menu-item index="/home/superuser_info">修改管理员信息</el-menu-item>
             <el-menu-item index="/home/superuser_pwd">修改管理员密码</el-menu-item>
             <el-menu-item index="/home/superuser_create">添加管理员</el-menu-item>
-            <el-menu-item index="5-2-2">删除管理员</el-menu-item>
-            <el-menu-item index="5-2-3">查询管理员</el-menu-item>
+            <el-menu-item index="/home/superuser_searchs">查询管理员用户</el-menu-item>
           </el-submenu>
           <el-submenu index="5-3">
             <template slot="title">场地管理</template>
@@ -47,6 +45,9 @@
             <el-menu-item index="/home/usershiyue">场地失约处理</el-menu-item>
           </el-submenu>
           <el-submenu index="5-4">
+            <el-menu-item index="/home/game_judge">裁判管理</el-menu-item>
+          </el-submenu>
+          <el-submenu index="5-5">
             <template slot="title">器材管理</template>
             <el-menu-item index="/home/tools_info">器材管理</el-menu-item>
             <el-menu-item index="/home/tools_rent">器材租借</el-menu-item>
@@ -68,11 +69,11 @@
           <span slot="title" class="black" index="">赛事管理</span>
         </el-menu-item>
         <el-menu-item-group>
-          <el-menu-item index="3-1">赛事创建</el-menu-item>
-          <el-menu-item index="3-2">赛事修改</el-menu-item>
-          <el-menu-item index="3-3">赛事取消</el-menu-item>
-          <el-menu-item index="3-4">赛事查询</el-menu-item>
-          <el-menu-item index="3-5">赛事公告</el-menu-item>
+          <el-menu-item index="/home/game_create">赛事创建</el-menu-item>
+          <el-menu-item index="/home/game_update">赛事修改</el-menu-item>
+          <el-menu-item index="/home/game_delete">赛事取消</el-menu-item>
+          <el-menu-item index="/home/game_query">赛事查询</el-menu-item>
+          <el-menu-item index="/home/game_show">赛事公告</el-menu-item>
         </el-menu-item-group>
         <!-- 器材管理 -->
         <el-menu-item>
@@ -88,10 +89,12 @@
 </template>
 
 <script>
+import request from '@/utils/request.js'
 export default {
   data() {
     return {
-      flag:true
+      flag:true,
+      dot:0,
     }
   },
   methods:{
@@ -103,9 +106,19 @@ export default {
     handleClose(done) {
       done();
     },
+    getCount(){
+      let usercode = localStorage.getItem('userid')
+      request({
+        url:'break/count/'+usercode,
+        method:'get'
+      }).then(res=>{
+        this.dot = res.data.data
+      })
+    }
   },
   created(){
     this.changeFlag()
+    this.getCount()
   }
 }
 </script>
@@ -119,5 +132,19 @@ export default {
 
 .el-menu {
   margin-bottom:100px ;
+}
+.dot{
+  display: inline-block;
+  background-color: #f56c6c;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 6px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid #fff;
 }
 </style>

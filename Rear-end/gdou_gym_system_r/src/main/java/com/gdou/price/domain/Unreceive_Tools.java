@@ -11,4 +11,5 @@ public class Unreceive_Tools {
     private Integer id;
     private String usercode;
     private float price;
+    private Integer priceid;
 }

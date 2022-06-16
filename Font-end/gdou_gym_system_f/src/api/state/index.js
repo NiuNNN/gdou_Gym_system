@@ -79,10 +79,10 @@ export const insertNotice = (content) => request({
 })
 
 //修改promise
-export const updapromise=(id)=>request({
+export const updapromise=(id,name,time)=>request({
     url: "/appointment/updatePById",
     method: 'get',
-   params:{id}
+   params:{id,name,time}
 })
 
 //根据userid获取预约名单
@@ -90,4 +90,20 @@ export const getuserapp=(userId)=>request({
     url: "/appointment/getInfoByUserId",
     method: 'get',
    params:{userId}
+})
+
+//开始使用
+
+export const kaishiuse=(id,name,time)=>request({
+    url: "/appointment/updateUById",
+    method: 'get',
+   params:{id,name,time}
+})
+
+//结束使用
+
+export const jieshuuse=(id,name,time)=>request({
+    url: "/appointment/updateUfById",
+    method: 'get',
+   params:{id,name,time}
 })

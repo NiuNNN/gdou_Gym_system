@@ -250,10 +250,7 @@ export default {
             //判断是否更新成功
             if (code === 200) {
               //3秒后跳转到登录页面
-              this.$message.success('管理员创建成功,3秒后返回登陆页面...')
-              setTimeout(() => {
-                this.$router.push('/user_login')
-              }, 3000)
+              this.$message.success('管理员创建成功')
             } else {
               if (res.data.data === 'code') {
                 this.userForm.code = ''

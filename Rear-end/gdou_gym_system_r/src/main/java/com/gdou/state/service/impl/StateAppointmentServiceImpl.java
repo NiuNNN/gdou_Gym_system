@@ -8,6 +8,7 @@ import com.gdou.state.domain.State;
 import com.gdou.state.domain.StateAppointment;
 import com.gdou.state.service.StateAppointmentService;
 import com.gdou.state.service.StateService;
+import com.gdou.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import java.util.List;
 @Service
 public class StateAppointmentServiceImpl extends ServiceImpl<AppointmentMapper, StateAppointment> implements StateAppointmentService {
     private StateService stateService;
+
+    @Autowired
+    private AppointmentMapper appointmentMapper;
 
     @Autowired
     @Lazy
@@ -68,4 +72,37 @@ public class StateAppointmentServiceImpl extends ServiceImpl<AppointmentMapper, 
     }
 
 
+    /**
+     * 获取用户预约记录
+     * @param usercode
+     * @return
+     */
+    @Override
+    public List<StateAppointment> getRent(String usercode) {
+        QueryWrapper<StateAppointment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",usercode).eq("usec","false");
+        List<StateAppointment> stateAppointments = appointmentMapper.selectList(queryWrapper);
+        List<String> time = TimeUtil.time();
+        for(int i = 0;i<stateAppointments.size();i++){
+            stateAppointments.get(i).setTime(time.get(Integer.parseInt(stateAppointments.get(i).getTime())));
+        }
+        return stateAppointments;
+    }
+
+    /**
+     * 获取失约记录
+     * @param usercode
+     * @return
+     */
+    @Override
+    public List<StateAppointment> getPromise(String usercode) {
+        QueryWrapper<StateAppointment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",usercode).eq("promise","true");
+        List<StateAppointment> stateAppointments = appointmentMapper.selectList(queryWrapper);
+        List<String> time = TimeUtil.time();
+        for(int i = 0;i<stateAppointments.size();i++){
+            stateAppointments.get(i).setTime(time.get(Integer.parseInt(stateAppointments.get(i).getTime())));
+        }
+        return stateAppointments;
+    }
 }

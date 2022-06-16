@@ -1,13 +1,21 @@
 package com.gdou.user.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gdou.price.dao.Price_ToolsMapper;
+import com.gdou.price.domain.Price_Tools;
+import com.gdou.state.dao.AppointmentMapper;
+import com.gdou.state.domain.StateAppointment;
 import com.gdou.user.dao.SuperUserMapper;
 import com.gdou.user.dao.UserMapper;
 import com.gdou.user.domain.SuperUser;
 import com.gdou.user.domain.User;
 import com.gdou.user.service.IUserService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +27,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private SuperUserMapper superUserMapper;
+
+    @Autowired
+    private Price_ToolsMapper price_toolsMapper;
+
+    @Autowired
+    private AppointmentMapper appointmentMapper;
 
     /**
      * 添加头像
@@ -124,6 +138,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return e>0;
     }
 
+    /**
+     * 获取用户名
+     * @param usercode
+     * @return
+     */
     @Override
     public String getUserName(String usercode) {
         QueryWrapper<User> queryWrapper  = new QueryWrapper<>();
@@ -138,5 +157,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         else {
             return user.getName();
         }
+    }
+
+
+    /**
+     * 获取全部用户信息
+     * @param currentPage 当前页码
+     * @param pageSize 页面大小
+     * @param user
+     * @return
+     */
+    @Override
+    public IPage<User> getPage(int currentPage, int pageSize, User user) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<User>();
+        lambdaQueryWrapper.like(Strings.isNotEmpty(user.getCode()),User::getCode,user.getCode());
+        IPage page = new Page(currentPage,pageSize);
+        userMapper.selectPage(page,lambdaQueryWrapper);
+        return page;
+    }
+
+    /**
+     * 删除用户
+     * @param usercode
+     * @return
+     */
+    @Override
+    public Boolean deleteUser(String usercode) {
+        //查询器材、场地的订单表有无欠费、预约
+        QueryWrapper<Price_Tools> price_toolsQueryWrapper = new QueryWrapper<>();
+        price_toolsQueryWrapper.eq("usercode",usercode).eq("price","");
+
+        if(price_toolsMapper.selectCount(price_toolsQueryWrapper)>0) return false;
+
+        QueryWrapper<StateAppointment> stateAppointmentQueryWrapper = new QueryWrapper<>();
+        stateAppointmentQueryWrapper.eq("user_id",usercode).eq("usec","false");
+
+        if(appointmentMapper.selectCount(stateAppointmentQueryWrapper)>0) return false;
+
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("code",usercode);
+        return userMapper.delete(userQueryWrapper)>0;
     }
 }

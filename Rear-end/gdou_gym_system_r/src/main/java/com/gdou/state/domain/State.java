@@ -14,4 +14,5 @@ public class State {
     private BigDecimal price;
     private String time;
     private String selected;
+    private  String tuse;
 }

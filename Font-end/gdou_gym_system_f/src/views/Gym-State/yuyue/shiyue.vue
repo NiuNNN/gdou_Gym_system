@@ -4,66 +4,134 @@
       <el-page-header @back="goBack" content="场地失约处理" title="返回主页">
       </el-page-header>
       <div class="search">
-      <el-form label-width="100px" :inline="true">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="请输入用户ID">
-              <el-input v-model="userId" @blur="kong"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-            <el-button type="primary"  @click="queryByid" >查询</el-button>
-          </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
-    <div class="show">
-      <h2 style="display: block; text-align: center">预约信息</h2>
-    <!-- 展示数据 -->
-    <el-table border style="width: 100%" :data="appointment" class="block" v-if="isblock">
-      <el-table-column type="index" label="序号" width="80px" align="center">
-      </el-table-column>
-      <!-- <el-table-column label="数量"> </el-table-column> -->
-      <el-table-column label="用户ID" prop="userId"> </el-table-column>
-      <el-table-column label="场地名称" prop="name"> </el-table-column>
-      <el-table-column label="价格" prop="price"> </el-table-column>
-      <el-table-column prop="date" label="日期"> </el-table-column>
-      <el-table-column prop="promise" label="是否失约"> </el-table-column>
-      <el-table-column label="时间段" prop="time"> </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="{ row }">
-          <el-button
-            icon="el-icon-success"
-            type="danger"
-            @click="updapromise(row.id)"
-          ></el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-form label-width="100px" :inline="true">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="请输入用户ID">
+                <el-input v-model="userId" @blur="kong"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item>
+                <el-button type="primary" @click="queryByid">查询</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+      <div class="show">
+        <h2 style="display: block; text-align: center">预约信息</h2>
+        <!-- 展示数据 -->
+        <el-table
+          border
+          style="width: 100%"
+          :data="appointment"
+          class="block"
+          v-if="isblock"
+        >
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80px"
+            align="center"
+          >
+          </el-table-column>
+          <!-- <el-table-column label="数量"> </el-table-column> -->
+          <el-table-column label="用户ID" prop="userId"> </el-table-column>
+          <el-table-column label="场地名称" prop="name"> </el-table-column>
+          <el-table-column label="价格" prop="price"> </el-table-column>
+          <el-table-column prop="date" label="日期"> </el-table-column>
+          <el-table-column prop="promise" label="是否失约"> </el-table-column>
+          <el-table-column label="时间段" prop="time"> </el-table-column>
+          <el-table-column label="是否正在使用" prop="usec">
+            <!-- <template slot-scope="{row}">
+         <h3 v-if="!JSON.parse(row.usec)">使用完成</h3>
+          </template> -->
+          </el-table-column>
+          <el-table-column label="操作" width="150px" align="center">
+            <div>sadasda</div>
+            <template slot-scope="{ row }">
+              <el-button
+                icon="el-icon-success"
+                type="danger"
+                title="确定失约"
+                :disabled="JSON.parse(row.promise)"
+                v-show="!JSON.parse(row.usec)"
+                @click="updapromise(row.id, row.name, row.time)"
+              ></el-button>
+              <el-button
+                type="primary"
+                title="开始使用"
+                icon="el-icon-circle-check"
+                v-if="!JSON.parse(row.usec)"
+                @click="kaishi(row.id, row.name, row.time)"
+                :disabled="JSON.parse(row.promise)"
+              ></el-button>
+              <el-button
+                type="warning"
+                title="结束使用"
+                icon="el-icon-circle-close"
+                v-else
+                @click="guanbi(row.id, row.name, row.time)"
+                v-show="show"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
 
-      <el-table border style="width: 100%" :data="appointmentbyuserId" class="block" v-else>
-      <el-table-column type="index" label="序号" width="80px" align="center">
-      </el-table-column>
-      <!-- <el-table-column label="数量"> </el-table-column> -->
-      <el-table-column label="用户ID" prop="userId"> </el-table-column>
-      <el-table-column label="场地名称" prop="name"> </el-table-column>
-      <el-table-column label="价格" prop="price"> </el-table-column>
-      <el-table-column prop="date" label="日期"> </el-table-column>
-      <el-table-column prop="promise" label="是否失约"> </el-table-column>
-      <el-table-column label="时间段" prop="time"> </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="{ row }">
-          <el-button
-            icon="el-icon-success"
-            type="danger"
-            @click="updapromise(row.id)"
-          ></el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    </div>
+
+      <!-- 根据用户id暂时数据 -->
+        <el-table
+          border
+          style="width: 100%"
+          :data="appointmentbyuserId"
+          class="block"
+          v-else
+        >
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80px"
+            align="center">
+          </el-table-column>
+          <!-- <el-table-column label="数量"> </el-table-column> -->
+          <el-table-column label="用户ID" prop="userId"> </el-table-column>
+          <el-table-column label="场地名称" prop="name"> </el-table-column>
+          <el-table-column label="价格" prop="price"> </el-table-column>
+          <el-table-column prop="date" label="日期"> </el-table-column>
+          <el-table-column prop="promise" label="是否失约"> </el-table-column>
+          <el-table-column label="时间段" prop="time"> </el-table-column>
+          <el-table-column label="操作" width="150px" align="center">
+            <div></div>
+            <template slot-scope="{ row }">
+              <el-button
+                icon="el-icon-success"
+                type="danger"
+                title="确定失约"
+                :disabled="JSON.parse(row.promise)"
+                v-show="!JSON.parse(row.usec)"
+                @click="updapromise(row.id, row.name, row.time)"
+              ></el-button>
+              <el-button
+                type="primary"
+                title="开始使用"
+                icon="el-icon-circle-check"
+                v-if="row.usec=='true'"
+                @click="kaishi(row.id, row.name, row.time)"
+                :disabled="JSON.parse(row.promise)"
+              ></el-button>
+              <el-button
+                type="warning"
+                title="结束使用"
+                icon="el-icon-circle-close"
+                v-else
+                @click="guanbi(row.id, row.name, row.time)"
+                v-show="show"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -73,7 +141,8 @@
 export default {
   data() {
     return {
-      isblock:true,
+      show: true,
+      isblock: true,
       userId: "",
       appointment: [],
       appointmentbyuserId: [],
@@ -87,10 +156,14 @@ export default {
     async seleteAll() {
       try {
         let result = await this.$API.getstateapp();
+     
         if (result.data.code == 200) {
           this.appointment = result.data.data;
-          console.log(appointment);
+
           for (let i = 0; i <= this.appointment.length; i++) {
+
+            console.log("打印",this.appointmentbyuserId[i])
+
             switch (this.appointment[i].time) {
               case "1":
                 this.appointment[i].time = "08:30:00-10:00:00";
@@ -118,43 +191,175 @@ export default {
         }
       } catch (error) {}
     },
-
-    async updapromise(id) {
-      let result = await this.$API.updapromise(id);
+    //失约处理
+    async updapromise(id, name, time) {
+let timed=time
+      switch (timed) {
+        case "08:30:00-10:00:00":
+        timed = "1";
+          break;
+        case "10:00:00-11:30:00":
+          timed = "2";
+          break;
+        case "14:30:00-16:00:00":
+          timed = "3";
+          break;
+        case "16:00:00-17:00:00":
+          timed = "4";
+          break;
+        case "17:30:00-19:00:00":
+          timed = "5";
+          break;
+        case "19:30:00-20:30:00":
+          timed = "6";
+          break;
+        case "20:30:00-22:00:00":
+          timed = "7";
+          break;
+      }
+      console.log(timed);
+      let result = await this.$API.updapromise(id, name, timed);
+      this.shiyue = true;
       this.seleteAll();
+      // this.seleteAll();
+      this.$message({
+        type: "success",
+        message: result.data.message,
+      });
     },
+    //查询
     async queryByid() {
-    
       let result = await this.$API.getuserapp(this.userId);
+    //  console.log(result);
       if (result.data.code == 200) {
         this.appointmentbyuserId = result.data.data;
-        this.isblock=false
+    
+        for (let i = 0; i < this.appointmentbyuserId.length; i++) {
+           console.log("打印",this.appointmentbyuserId[i])
+          switch (this.appointmentbyuserId[i].time) {
+            case '1':
+              this.appointmentbyuserId[i].time = "08:30:00-10:00:00";
+              break;
+            case '2':
+              this.appointmentbyuserId[i].time = "10:00:00-11:30:00";
+              break;
+            case '3':
+              this.appointmentbyuserId[i].time = "14:30:00-16:00:00";
+              break;
+            case '4':
+              this.appointmentbyuserId[i].time = "16:00:00-17:00:00";
+              break;
+            case '5':
+              this.appointmentbyuserId[i].time = "17:30:00-19:00:00";
+              break;
+            case '6':
+              this.appointmentbyuserId[i].time = "19:30:00-20:30:00";
+              break;
+            case '7':
+              this.appointmentbyuserId[i].time = "20:30:00-22:00:00";
+              break;
+       
+          }
+          
+        }
+        this.isblock = false;
       }
     },
-    goBack(){
-      this.$router.push('/home')
-    },
-    kong(){
-      if(this.userId==""){
-         this.seleteAll();
-        this.isblock=true
-      }
-    }
 
+
+
+    //开始使用
+    async kaishi(id, name, time) {
+      let timed=time
+      switch (timed) {
+        case "08:30:00-10:00:00":
+        timed = "1";
+          break;
+        case "10:00:00-11:30:00":
+          timed = "2";
+          break;
+        case "14:30:00-16:00:00":
+          timed = "3";
+          break;
+        case "16:00:00-17:00:00":
+          timed = "4";
+          break;
+        case "17:30:00-19:00:00":
+          timed = "5";
+          break;
+        case "19:30:00-20:30:00":
+          timed = "6";
+          break;
+        case "20:30:00-22:00:00":
+          timed = "7";
+          break;
+      }
+console.log(timed);
+      let result = await this.$API.kaishiuse(id, name, timed);
+      if (result.data.code == 200) {
+        this.$message({
+          type: "success",
+          message: "开始使用",
+        });
+        this.seleteAll();
+      }
+    },
+    //结束使用
+    async guanbi(id, name, time) {
+            let timed=time
+      switch (timed) {
+        case "08:30:00-10:00:00":
+        timed = "1";
+          break;
+        case "10:00:00-11:30:00":
+          timed = "2";
+          break;
+        case "14:30:00-16:00:00":
+          timed = "3";
+          break;
+        case "16:00:00-17:00:00":
+          timed = "4";
+          break;
+        case "17:30:00-19:00:00":
+          timed = "5";
+          break;
+        case "19:30:00-20:30:00":
+          timed = "6";
+          break;
+        case "20:30:00-22:00:00":
+          timed = "7";
+          break;
+      }
+
+      let result = await this.$API.jieshuuse(id, name, timed);
+      if (result.data.code == 200) {
+        this.show = false;
+        this.seleteAll();
+      }
+    },
+    goBack() {
+      this.$router.push("/home");
+    },
+    kong() {
+      if (this.userId == "") {
+        this.seleteAll();
+        this.isblock = true;
+      }
+    },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.descriptions-container{
+.descriptions-container {
   width: 100%;
-  .descriptions-box{
+  .descriptions-box {
     position: relative;
     margin: 0 auto;
     width: 98%;
     border-radius: 4px;
     overflow: hidden;
-    .search{
+    .search {
       margin-top: 30px;
     }
   }

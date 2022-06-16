@@ -2,6 +2,7 @@ package com.gdou.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gdou.api.CommonResult;
 import com.gdou.user.domain.SuperUser;
 import com.gdou.user.service.ISuperUserService;
@@ -142,6 +143,34 @@ public class SuperInfoController {
         queryWrapper.eq("code",usercode);
         SuperUser superUser = superUserService.getOne(queryWrapper);
         return CommonResult.success(superUser);
+    }
+
+    /**
+     * 获取全部管理员信息
+     * @param currentPage 当前页码
+     * @param pageSize 页面大小
+     * @param superUser
+     * @return
+     */
+    @GetMapping("getAll/{currentPage}/{pageSize}")
+    public CommonResult getAll(@PathVariable int currentPage, @PathVariable int pageSize, SuperUser superUser){
+        IPage<SuperUser> page = superUserService.getPage(currentPage,pageSize,superUser);
+        //如果当前页码大于了总页码值，那么重新执行查询操作，使用最大页码值作为当前页码值
+        if(currentPage>page.getPages()){
+            page = superUserService.getPage((int)page.getPages(),pageSize,superUser);
+        }
+        return CommonResult.success(page);
+    }
+
+    /**
+     * 删除管理员
+     * @param usercode
+     * @return
+     */
+    @DeleteMapping("{usercode}")
+    public CommonResult deleteuser(@PathVariable String usercode){
+        Boolean flag = superUserService.deleteUser(usercode);
+        return flag ? CommonResult.success() :CommonResult.failed();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gdou.user.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gdou.user.domain.SuperUser;
 
@@ -16,4 +17,8 @@ public interface ISuperUserService extends IService<SuperUser> {
     boolean checkPhone(String phone);
 
     boolean checkEmail(String email);
+
+    IPage<SuperUser> getPage(int currentPage, int pageSize, SuperUser superUser);
+
+    Boolean deleteUser(String usercode);
 }

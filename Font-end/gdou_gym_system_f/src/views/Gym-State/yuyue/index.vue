@@ -87,9 +87,12 @@
               <el-button
                 icon="el-icon-delete"
                 type="danger"
+                v-show="!JSON.parse(row.usec)"
+               v-if="!JSON.parse(row.promise)"
              @click="deleteappid(row.id)"
               ></el-button>
-
+                <h3 v-else>已判定失约</h3>
+                <h3 v-if="JSON.parse(row.usec)" style="color:green">正在使用</h3>
             </template>
           </el-table-column>
         </el-table>
@@ -99,7 +102,7 @@
 </template>
 
 <script>
-import dataFormat from "@/api/time";
+import dataFormat from "@/api/timeymd";
 export default {
   name: "yuyue",
   data() {
@@ -108,13 +111,14 @@ export default {
       namelist: [],
       times: [],
       appointment: {},
+      isshiyue:false,
       sizeForm: {
         userId: "",
         name: "",
         date: "",
         time: "",
         price: "",
-        promise: "否",
+        promise:false,
       },
              dialogFormVisible: false,
       value1: "",
@@ -128,11 +132,13 @@ export default {
     //获取所有预约信息
     async seleteAll() {
       try {
+  
          let userId = localStorage.getItem("userid");
         let result = await this.$API.getuserapp(userId);
+        console.log(result);
         if (result.data.code == 200) {
           this.appointment = result.data.data;
-     
+           console.log(this.appointment.promise);
                for (let i = 0; i <= this.appointment.length; i++) {
                
             switch (this.appointment[i].time) {
@@ -247,15 +253,20 @@ export default {
       try {
  let userId = localStorage.getItem("userid");
  this.sizeForm.userId=userId;
-
         let result = await this.$API.insertAppointment(this.sizeForm);
 
         if (result.data.code == 200) {
           this.$message({
             type: "success",
             message: "添加成功",
-          }),
-          this.seleteAll();
+          }),  
+             this.getstate();
+    this.seleteAll();
+       this.price=[],
+       this.namelist= [],
+       this.times=[],
+      this.sizeForm={}
+        
         }
       } catch (error) {
         alert(error)
@@ -264,7 +275,7 @@ export default {
 
     //删除预约
     async deleteappid(id){
-      // console.log(row.id,row.name);
+
         let result=await this.$API.deleteById(id)
         if(result.data.code==200){
           this.$message({

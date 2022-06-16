@@ -16,13 +16,16 @@ import Main from '@/views/Main.vue';
 // User
 import UserInfo from '@/views/Gym-User/user-info.vue'; //修改用户信息
 import UserPwd from '@/views/Gym-User/user-pwd.vue';//修改用户密码
+import UserBreak from '@/views/Gym-User/user-breakContract.vue';//用户的失约记录
 
 //Superuser
-import User_create from '@/views/Gym-Superuser/user-create.vue';
-import User_update from '@/views/Gym-Superuser/user-update.vue';
-import Super_create from '@/views/Gym-Superuser/superuser-create.vue'
+import User_create from '@/views/Gym-Superuser/user-create.vue';//创建用户
+import User_update from '@/views/Gym-Superuser/user-update.vue';//修改用户密码
+import Super_create from '@/views/Gym-Superuser/superuser-create.vue';//创建管理员
 import SuperuserInfo from '@/views/Gym-Superuser/superuser-info.vue'; //修改管理员信息
 import SuperuserPwd from '@/views/Gym-Superuser/superuser-pwd.vue';//修改管理员密码
+import SuperSearch from '@/views/Gym-Superuser/superuser-searchuser.vue'; //查询普通用户
+import SuperSearchS from '@/views/Gym-Superuser/superuser-searchsuper.vue'; //查询管理员用户
 
 // Tools
 import ToolsInfo from '@/views/Gym-Tools/tools-info.vue';//展示用户信息进行增删
@@ -36,6 +39,14 @@ import StateNotice from '@/views/Gym-State/gonggao';
 import StateBook from '@/views/Gym-State/yuyue'
 import StateUserNotice from '@/views/Gym-State/gonggao/usergonggao'
 import StateFaild from '@/views/Gym-State/yuyue/shiyue'
+
+// Game
+import Game_create from '@/views/Gym-Game/Game-create.vue';
+import Game_update from '@/views/Gym-Game/Game-update.vue';
+import Game_query from '@/views/Gym-Game/Game-query.vue';
+import Game_delete from '@/views/Gym-Game/Game-delete.vue';
+import Game_judge from "@/views/Gym-Game/Game-judge.vue";
+import Game_show from '@/views/Gym-Game/Game-show.vue';
 
 // 导入不拦截地址
 import pathArr from '@/router/pathArr.js';
@@ -64,6 +75,7 @@ const routes = [
       {path: 'main', component: Main},
       {path:'user_info',component:UserInfo},
       {path:'user_pwd',component:UserPwd},
+      {path:'user_break',component:UserBreak},
       {path:'tools_info',component:ToolsInfo},
       {path:'tools_borrow',component:ToolsBor},
       {path:'tools_rent',component:ToolsRent},
@@ -73,11 +85,19 @@ const routes = [
       {path:'superuser_info',component:SuperuserInfo},
       {path:'superuser_pwd',component:SuperuserPwd},
       {path:'superuser_create',component:Super_create},
+      {path:'superuser_search',component:SuperSearch},
+      {path:'superuser_searchs',component:SuperSearchS},
       {path:'state',component:State},
       {path:'gonggao',component:StateNotice},
       {path:'yuyue',component:StateBook},
       {path:'usergonggao',component:StateUserNotice},
-      {path:'usershiyue',component:StateFaild}
+      {path:'usershiyue',component:StateFaild},
+      {path:"game_create",component:Game_create},
+      {path:'game_update',component:Game_update},
+      {path:"game_query",component:Game_query},
+      {path:"game_delete",component:Game_delete},
+      {path:"game_judge",component:Game_judge},
+      {path:'game_show',component:Game_show}
     ]
   },
 ]
@@ -95,6 +115,7 @@ router.beforeEach((to, from, next)=>{
     next();
   }else {
     let Authorization = localStorage.getItem('Authorization');
+    let userclass = localStorage.getItem('userclass')
     if(Authorization === null || Authorization === ''){
       // console.log('1');
       next('/user_login');

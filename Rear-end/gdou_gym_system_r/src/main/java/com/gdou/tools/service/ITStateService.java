@@ -13,4 +13,5 @@ public interface ITStateService extends IService<TState> {
     boolean updateState(Integer id);
     String getToolscode(Integer id);
     List<String> getDateTime(Integer id);
+    List<UserToolsVO> getRentMessage(String usercode);
 }

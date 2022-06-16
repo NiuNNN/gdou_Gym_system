@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gdou.price.dao.Price_ToolsMapper;
 import com.gdou.price.domain.Price_Tools;
 import com.gdou.tools.dao.TStateMapper;
+import com.gdou.tools.dao.ToolsMapper;
 import com.gdou.tools.domain.TState;
+import com.gdou.tools.domain.Tools;
 import com.gdou.tools.domain.UserToolsVO;
 import com.gdou.tools.service.ITStateService;
 import com.gdou.utils.TimeUtil;
@@ -26,6 +28,9 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
 
     @Autowired
     private Price_ToolsMapper price_toolsMapper;
+
+    @Autowired
+    private ToolsMapper toolsMapper;
 
     /**
      *根据时间要求 查询是否有器材选择
@@ -185,4 +190,30 @@ public class TStateServiceImpl extends ServiceImpl<TStateMapper, TState> impleme
         return list;
     }
 
+    /**
+     * 获取用户预约信息
+     * @param usercode
+     * @return
+     */
+    @Override
+    public List<UserToolsVO> getRentMessage(String usercode) {
+        List<UserToolsVO> list = new ArrayList<>();
+        UserToolsVO userToolsVO = new UserToolsVO();
+
+        List<String> timeList = TimeUtil.time();
+
+        QueryWrapper<TState> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("usercode",usercode).eq("receive","未领取");
+        List<TState> tStates = tStateMapper.selectList(queryWrapper);
+
+        for(int i =0;i<tStates.size();i++){
+            Tools tools = toolsMapper.selectById(tStates.get(i).getToolscode());
+            userToolsVO.setKind(tools.getKind());
+            userToolsVO.setToolscode(tools.getId());
+            userToolsVO.setDate(tStates.get(i).getDate());
+            userToolsVO.setDatetime(timeList.get(tStates.get(i).getTime()));
+            list.add(userToolsVO);
+        }
+        return list;
+    }
 }

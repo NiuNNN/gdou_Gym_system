@@ -140,4 +140,16 @@ public class ToolsStateController {
         return CommonResult.success(price_overTime.getFine());
     }
 
+
+    /**
+     * 获取用户的租借信息
+     * @param usercode
+     * @return
+     */
+    @GetMapping("{usercode}")
+    public CommonResult getState(@PathVariable String usercode){
+        return CommonResult.success(itStateService.getRentMessage(usercode));
+    }
+
+
 }

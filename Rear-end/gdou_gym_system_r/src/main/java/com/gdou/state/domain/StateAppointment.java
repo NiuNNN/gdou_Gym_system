@@ -16,4 +16,5 @@ public class StateAppointment {
     private String time;
     private String promise;
     private BigDecimal price;
+    private String usec;
 }

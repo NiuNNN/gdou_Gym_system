@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <div class="logo">
-      <span>广东海洋大学体育管理平台</span>
+      <span>广东海洋大学体育馆管理平台</span>
     </div>
     <div class="userinfo">
       <img :src="imgUrl" alt="">

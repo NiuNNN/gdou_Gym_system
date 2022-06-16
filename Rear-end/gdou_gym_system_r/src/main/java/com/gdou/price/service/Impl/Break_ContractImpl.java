@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class Break_ContractImpl extends ServiceImpl<Break_ContractMapper, Break_Contract> implements IBreak_ContractService {
@@ -65,4 +67,21 @@ public class Break_ContractImpl extends ServiceImpl<Break_ContractMapper, Break_
         }
         return res>0;
     }
+
+    /**
+     * 获取违规信息
+     * @return
+     */
+    @Override
+    public List<String> getDescription() {
+        List<String> description = new ArrayList<>();
+        QueryWrapper<Break_Contract> queryWrapper = new QueryWrapper<>();
+        queryWrapper.ne("description","");
+        List<Break_Contract> break_contracts = break_contractMapper.selectList(queryWrapper);
+        for(int i =0;i<break_contracts.size();i++){
+            description.add(break_contracts.get(i).getDescription());
+        }
+        return description;
+    }
+
 }
