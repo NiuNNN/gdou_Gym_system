@@ -225,6 +225,11 @@ public class Price_ToolsController {
         else return CommonResult.failed();
     }
 
+    /**
+     * 用户缴费取消登记
+     * @param id
+     * @return
+     */
     @GetMapping("cancelRegister/{id}")
     public CommonResult cancelRegister(@PathVariable Integer id){
         boolean flag = iUnreceive_tools.cancelRegister(id);

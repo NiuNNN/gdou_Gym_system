@@ -94,7 +94,7 @@ export default {
 .login-container{
   height: 100%;
   background:url('@/assets/img/bgc.jpg') no-repeat;
-  background-size: 1600px auto;
+  background-size: 1920px auto;
   .notice-box{
     position: absolute;
     width: 630px;

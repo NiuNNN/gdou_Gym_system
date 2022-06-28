@@ -43,6 +43,14 @@ public class ToolsController {
 
     }
 
+    /**
+     *
+     * @param token
+     * @param currentPage
+     * @param pageSize
+     * @param tools
+     * @return
+     */
     @GetMapping("getExistAll/{token}/{currentPage}/{pageSize}")
     public CommonResult getExistAll(@PathVariable String token,@PathVariable int currentPage, @PathVariable int pageSize, Tools tools){
         boolean verify = TokenUtil.verify(token);//token是否超时如果超时前端就强制退出用户
@@ -129,6 +137,11 @@ public class ToolsController {
         return CommonResult.failed();
     }
 
+    /**
+     * 删除器材
+     * @param id 器材id
+     * @return
+     */
     @DeleteMapping("{id}")
     public CommonResult deleteTools(@PathVariable Integer id){
         boolean flag = iToolsService.deleteTools(id);

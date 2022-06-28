@@ -305,7 +305,7 @@ export default {
       }).then((res) => {
         let code = res.data.code
         if (code === 200) {
-          let id = this.tableData[index].toolid
+          let id = this.tableData[index].locationid
           request({
             url: '/appointment/gametodelete/' + id,
             method: 'Post',

@@ -8,7 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
 
 public class TokenUtil {
-    private static final long EXPIRE_TIME = 24*60*60*1000;  //有效时长
+    private static final long EXPIRE_TIME =60*60*1000;  //有效时长
     private static final String TOKEN_SECRET = "ben";       // 秘钥
 
     /**

@@ -28,6 +28,7 @@
                     v-model="sizeForm.date"
                     type="date"
                     placeholder="选择日期"
+                    :picker-options="pickerOptions"
                     @change="changedate">
                   </el-date-picker>
                 </div>
@@ -122,7 +123,14 @@ export default {
       },
              dialogFormVisible: false,
       value1: "",
-    };
+      pickerOptions: {
+        disabledDate(time) {
+          const date = new Date();
+          date.setTime(date.getTime() - 3600 * 1000 * 24)
+          return time.getTime() <= date;
+        }
+      },//时间选择器 date
+    }
   },
   mounted() {
     this.getstate();

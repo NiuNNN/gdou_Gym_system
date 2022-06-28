@@ -45,6 +45,7 @@
             <el-menu-item index="/home/usershiyue">场地失约处理</el-menu-item>
           </el-submenu>
           <el-submenu index="5-4">
+            <template slot="title">比赛管理</template>
             <el-menu-item index="/home/game_judge">裁判管理</el-menu-item>
           </el-submenu>
           <el-submenu index="5-5">
